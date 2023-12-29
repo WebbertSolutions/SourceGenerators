@@ -1,0 +1,24 @@
+﻿//  Add a new Item --> Text Template
+//  Copy the following and drop it at the end of the file
+
+
+<#= Run() #>
+<#+
+	//
+	//	REQUIRED DATA STRUCTURES
+	//
+
+
+	//
+	//	RUN METHOD
+	//
+	public static string Run()
+	{
+	}
+
+
+	//
+	//	START OF TEMPLATE
+	//
+
+#>
