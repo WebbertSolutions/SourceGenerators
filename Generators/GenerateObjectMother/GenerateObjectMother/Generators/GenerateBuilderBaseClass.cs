@@ -17,6 +17,8 @@ public abstract class Builder<T> where T : class
 
 	public abstract T Build();
 
+	protected virtual T Construct() => null!;
+
 
 	public Builder<T> WithObject(T value)
 	{{
@@ -44,6 +46,21 @@ public abstract class Builder<T> where T : class
 	}}
 
 	private static int GetRandom(int min, int max) => _random.Next(min, max);
+
+
+	private static System.Reflection.ConstructorInfo _ctor;
+
+	protected static T CreateInstance(params object[] parameters)
+	{{
+		_ctor ??= typeof(T)
+			.GetConstructors(
+				System.Reflection.BindingFlags.Instance | 
+				System.Reflection.BindingFlags.Public | 
+				System.Reflection.BindingFlags.NonPublic)
+			.First();
+
+		return (T)_ctor.Invoke(parameters);
+	}}
 }}
 		");
 	}

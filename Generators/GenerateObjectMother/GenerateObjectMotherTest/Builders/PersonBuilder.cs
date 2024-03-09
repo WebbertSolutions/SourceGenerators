@@ -1,7 +1,4 @@
-﻿using GenerateObjectMotherTest.TestHelper;
-
-namespace GenerateObjectMotherTest.Builders;
-
+﻿namespace GenerateObjectMotherTest.Builders;
 
 [ObjectMotherBuilder(typeof(Person))]
 public partial class PersonBuilder

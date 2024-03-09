@@ -19,8 +19,7 @@ global using Microsoft.CodeAnalysis.CSharp.Syntax;
 //	Project
 //
 
-global using BaseSourceGenerator;
-global using BaseSourceGenerator.Models;
+global using WS.Gen.ObjectMother.Models;
 
 
 //

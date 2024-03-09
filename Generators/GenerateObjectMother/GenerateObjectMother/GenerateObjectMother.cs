@@ -1,8 +1,7 @@
 ﻿namespace WS.Gen.ObjectMother;
 
-
 [Generator]
-public class ObjectMotherGenerator : BaseGenerator
+public class ObjectMotherGenerator : BaseGenerator<GeneratorInformation>
 {
 	const string attributeNamespace = "WS.Gen.ObjectMother";
 	const string attributeName = "ObjectMotherBuilderAttribute";
@@ -15,21 +14,44 @@ public class ObjectMotherGenerator : BaseGenerator
 	}
 
 
-	protected override ClassInformation? ScrapeInformation(INamedTypeSymbol classSymbol)
+	protected override GeneratorInformation ProcessAttribute(AttributeData generatorInterface, INamedTypeSymbol classSymbol)
 	{
-		return GetClassInformation(classSymbol);
+		return new GeneratorInformation
+		{
+			ClassInformation = ProcessAttribute(classSymbol),
+			InterfaceInformation = ProcessAttributeClassParameter(generatorInterface)
+		};
 	}
 
 
-	protected override ClassInformation? ProcessInterface(AttributeData generatorInterface)
+	protected ClassInformation ProcessAttribute(INamedTypeSymbol classSymbol)
 	{
-		var classSymbol = (INamedTypeSymbol?)generatorInterface?.ConstructorArguments[0].Value;
-
-		return GetClassInformation(classSymbol!);
+		return new ClassInformation
+		{
+			Namespace = GetNamespace(classSymbol),
+			ClassName = GetClassName(classSymbol)
+		};
 	}
 
 
-	protected override void Execute(SourceProductionContext context, GeneratorInformation generatorInformation)
+	protected InterfaceInformation ProcessAttributeClassParameter(AttributeData generatorInterface)
+	{
+		var classSymbol = (INamedTypeSymbol?)generatorInterface?.ConstructorArguments[0].Value!;
+
+		return new InterfaceInformation
+		{
+			GenerateSample = (bool)generatorInterface?.ConstructorArguments[1].Value!,
+
+			Namespace = GetNamespace(classSymbol),
+			ClassName = GetClassName(classSymbol),
+			Constructors = GetConstructorInformation(classSymbol),
+			Properties = GetPropertyInformation(classSymbol),
+			Fields = GetFieldInformation(classSymbol)
+		};
+	}
+
+
+	protected override void GenerateTemplate(SourceProductionContext context, GeneratorInformation generatorInformation)
 	{
 		var classInfo = generatorInformation.InterfaceInformation!;
 		var namespaceName = generatorInformation.ClassInformation!.Namespace;
@@ -41,7 +63,7 @@ public class ObjectMotherGenerator : BaseGenerator
 	}
 
 
-	protected override void PostInitializationOutput(IncrementalGeneratorPostInitializationContext context)
+	protected override void GenerateAdditionalTemplates(IncrementalGeneratorPostInitializationContext context)
 	{
 		var filename = $"{attributeNamespace}.Attribute";
 		GenerateInterfaceWithType.AddFile(context, filename, attributeNamespace, attributeName);

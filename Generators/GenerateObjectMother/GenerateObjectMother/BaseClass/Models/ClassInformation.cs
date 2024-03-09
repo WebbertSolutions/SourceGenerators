@@ -1,9 +1,7 @@
-﻿namespace BaseSourceGenerator.Models;
+﻿namespace WS.Gen.ObjectMother.Models;
 
 public class ClassInformation
 {
 	public string Namespace { get; set; } = string.Empty;
 	public string ClassName { get; set; } = string.Empty;
-
-	public List<PropertyInformation> Properties { get; set; } = new();
 }

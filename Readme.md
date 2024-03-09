@@ -30,10 +30,10 @@ The all files in the BaseClass folder and both of the current generate interface
 
 	- As a performance improvement, data is not actually generated until the .Build() method is called.  This allows you to reuse an existing builder (e.g. Typical) and make the modifications you need directly in your test.  After all the modifications have been made, call the Build() method to create the object.
 	
+ 
 	````
 	Person person = PersonBuilder.Typical()
 		.SetDefaultAddresses(new())
 		.SetDefaultFirstName()
 		.Build();
-
 	````

@@ -11,14 +11,11 @@
 // </auto-generated>
 // ================================================================================
 
-using WS.Gen.ObjectMother;
-
 namespace RandomTestDataApp.Generator;
-
 
 public partial class PostalAddressBuilder : Builder<PostalAddress>
 {
-	private Lazy<int> _address1 = new (default(int));
+	private Lazy<string> _address1 = new (default(string));
 	private Lazy<string> _address2 = new (default(string));
 	private Lazy<string> _city = new (default(string));
 	private Lazy<int> _stateId = new (default(int));
@@ -30,16 +27,12 @@ public partial class PostalAddressBuilder : Builder<PostalAddress>
     {
         if (BuilderObject?.IsValueCreated != true)
         {
-            BuilderObject = new Lazy<PostalAddress>(new PostalAddress
-            {
-				Address1 = _address1.Value,
-				Address2 = _address2.Value,
-				City = _city.Value,
-				StateId = _stateId.Value,
-				PostalCode = _postalCode.Value,
-				People = _people.Value
-            });
-        }
+			// Couldn't create constructor.  
+			// Please Override Construct() in the partial Builder class
+			// 	protected override <class> Construct() => CreateInstance(_param1.Value, _param2.Value, etc. );
+
+            BuilderObject = new Lazy<PostalAddress>(() => Construct());
+		}
 
         PostBuild(BuilderObject.Value);
 
@@ -56,24 +49,25 @@ public partial class PostalAddressBuilder : Builder<PostalAddress>
         return new PostalAddressBuilder();
     }
 
+
     //
     //  With Properties
     //
 
-    public PostalAddressBuilder WithAddress1(int value)
+    public PostalAddressBuilder WithAddress1(string value)
     {
         return WithAddress1(() => value);
     }
     
-    public PostalAddressBuilder WithAddress1(Func<int> func)
+    public PostalAddressBuilder WithAddress1(Func<string> func)
     {
-        _address1 = new Lazy<int>(func);
+        _address1 = new Lazy<string>(func);
         return this;
     }
 
-    public PostalAddressBuilder SetDefaultAddress1(int newValue = default)
+    public PostalAddressBuilder SetDefaultAddress1(string newValue = default)
     {
-		_address1 = new Lazy<int>(newValue);
+		_address1 = new Lazy<string>(newValue);
         return this;
     }
 
@@ -163,5 +157,7 @@ public partial class PostalAddressBuilder : Builder<PostalAddress>
     }
 }
 
+
 #nullable restore
 #pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
+

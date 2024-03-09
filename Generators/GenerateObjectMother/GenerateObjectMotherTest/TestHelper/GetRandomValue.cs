@@ -1,7 +1,4 @@
-﻿using System.Text;
-
-namespace GenerateObjectMotherTest.TestHelper;
-
+﻿namespace GenerateObjectMotherTest;
 
 public static class GetRandomValue
 {

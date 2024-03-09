@@ -1,4 +1,4 @@
-﻿namespace BaseSourceGenerator;
+﻿namespace WS.Gen.ObjectMother;
 
 internal static class GenerateInterfaceWithType
 {
@@ -14,11 +14,13 @@ namespace {attributeNamespace};
 internal class {attributeName} : System.Attribute 
 {{
 	public Type ClassType {{ get; }}
+	public bool GenerateSample {{ get; }}
 
 
-	public {attributeName}(System.Type type)
+	public {attributeName}(System.Type type, bool generateSample = false)
 	{{
 		ClassType = type;
+		GenerateSample = generateSample;
 	}}
 }}
 ");

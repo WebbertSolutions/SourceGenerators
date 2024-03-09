@@ -1,7 +1,9 @@
-﻿namespace BaseSourceGenerator.Models;
+﻿namespace WS.Gen.ObjectMother.Models;
 
-public class PropertyInformation
+public class ClassMember
 {
+	public Accessibility Accessibility { get; set; }
+
 	public string DataType { get; set; } = string.Empty;
 	public string PropertyName { get; set; } = string.Empty;
 	public string FieldName => GetFieldName();

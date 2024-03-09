@@ -13,20 +13,53 @@
 
 	public class GeneratorInformation
 	{
-		public ClassInformation? ClassInformation { get; set; }
-		public ClassInformation? InterfaceInformation { get; set; }
+		public ClassInformation ClassInformation { get; set; } = new();
+		public InterfaceInformation InterfaceInformation { get; set; } = new();
 	}
 
 	public class ClassInformation
 	{
 		public string Namespace { get; set; } = string.Empty;
 		public string ClassName { get; set; } = string.Empty;
-
-		public List<PropertyInformation> Properties { get; set; } = new();
 	}
 
-	public class PropertyInformation
+	public class InterfaceInformation
 	{
+		public string Namespace { get; set; } = string.Empty;
+		public string ClassName { get; set; } = string.Empty;
+
+		public bool GenerateSample { get; set; }
+
+		public List<ConstructorInformation> Constructors { get; set; } = new();
+		public List<ClassMember> Properties { get; set; } = new();
+		public List<ClassMember> Fields { get; set; } = new();
+	}
+
+	public class ConstructorInformation
+	{
+		public Accessibility Accessibility { get; set; }
+		public List<ConstructorParameters> Parameters { get; set; } = new();
+
+		public bool IsParameterless => !Parameters.Any();
+	}
+
+	public class ConstructorParameters
+	{
+		public string DataType { get; set; } = string.Empty;
+		public string ParameterName { get; set; } = string.Empty;
+
+
+		public ConstructorParameters(string dataType, string parameterName)
+		{
+			DataType = dataType;
+			ParameterName = parameterName;
+		}
+	}
+
+	public class ClassMember
+	{
+		public Accessibility Accessibility { get; set; }
+
 		public string DataType { get; set; } = string.Empty;
 		public string PropertyName { get; set; } = string.Empty;
 		public string FieldName => GetFieldName();
@@ -49,6 +82,43 @@
 
 
 	//
+	//	Miscellaneous Functions
+	//
+
+	private static int _newlineLength;
+
+	private static int NewlineLength()
+	{
+		if (_newlineLength == 0)
+		{
+			var sb = new StringBuilder();
+			sb.AppendLine("");
+			_newlineLength = sb.Length;
+		}
+
+		return _newlineLength;
+	}
+
+	//
+	//	REQUIRED Enumerations
+	//
+
+	public enum Accessibility
+	{
+		NotApplicable = 0,
+		Private = 1,
+		ProtectedAndInternal = 2,
+		ProtectedAndFriend = ProtectedAndInternal,
+		Protected = 3,
+		Internal = 4,
+		Friend = Internal,
+		ProtectedOrInternal = 5,
+		ProtectedOrFriend = ProtectedOrInternal,
+		Public = 6
+	}
+
+
+	//
 	//	RUN METHOD
 	//
 
@@ -61,19 +131,84 @@
 				Namespace = "RandomTestDataApp.Generator",
 				ClassName = "PostalAddressBuilder"
 			},
-			InterfaceInformation = new ClassInformation
+			InterfaceInformation = new InterfaceInformation
 			{
 				Namespace = "RandomTestDataApp",
 				ClassName = "PostalAddress",
 
+				Constructors = new()
+				{
+					//
+					// Public - Without Parameters
+					//
+
+					//new ConstructorInformation 
+					//{
+					//	Accessibility = Accessibility.Public, 
+					//	Parameters = new()
+					//},
+
+					//
+					// Public - With Parameters
+					//
+
+					//new ConstructorInformation 
+					//{
+					//	Accessibility = Accessibility.Public, 
+					//	Parameters = new() 
+					//	{
+					//		new ConstructorParameters("string", "address1"),
+					//		new ConstructorParameters("int", "stateId")
+					//	}
+					//},
+					
+					//
+					// Private - Without Parameters
+					//
+
+					//new ConstructorInformation 
+					//{
+					//	Accessibility = Accessibility.Private, 
+					//	Parameters = new()
+					//},
+
+					//
+					// Private - With Parameters
+					//
+
+					//new ConstructorInformation 
+					//{
+					//	Accessibility = Accessibility.Private, 
+					//	Parameters = new() 
+					//	{
+					//		new ConstructorParameters("string", "address1"),
+					//		new ConstructorParameters("int", "stateId")
+					//	}
+					//}
+
+					//
+					// Private - Can't find constructor
+					//
+
+					new ConstructorInformation 
+					{
+						Accessibility = Accessibility.Private, 
+						Parameters = new() 
+						{
+							new ConstructorParameters("string", "someAddrress"),
+							new ConstructorParameters("int", "stateId")
+						}
+					}
+				},
+
 				Properties = new()
 				{
-					new PropertyInformation { DataType = "int", PropertyName = "Address1"   },
-					new PropertyInformation { DataType = "string", PropertyName = "Address2"   },
-					new PropertyInformation { DataType = "string", PropertyName = "City"       },
-					new PropertyInformation { DataType = "int",    PropertyName = "StateId"    },
-					new PropertyInformation { DataType = "string", PropertyName = "PostalCode" },
-					new PropertyInformation { DataType = "List<string>", PropertyName = "People", IsCollection = true }
+					new ClassMember { DataType = "string", PropertyName = "Address1"   },
+					new ClassMember { DataType = "string", PropertyName = "Address2"   },
+					new ClassMember { DataType = "string", PropertyName = "City"       },
+					new ClassMember { DataType = "int",    PropertyName = "StateId"    },
+					new ClassMember { DataType = "string", PropertyName = "PostalCode" },
+					new ClassMember { DataType = "List<string>", PropertyName = "People", IsCollection = true }
 				}
 			}
 		};
@@ -93,12 +228,14 @@ internal static class GenerateBuilder
 {
 	public static string GetTemplate(GeneratorInformation generatorInformation, string attributeNamespace)
 	{
-		var classInformation = generatorInformation.ClassInformation;
-		var interfaceInformation = generatorInformation.InterfaceInformation;
+		var classInformation = generatorInformation.ClassInformation!;
+		var interfaceInformation = generatorInformation.InterfaceInformation!;
+		var builderName = classInformation.ClassName;
 
-		string fieldBackers = GetAllFieldBackers(interfaceInformation!);
-		string objectAssignment = GetAllObjectAssignment(interfaceInformation!);
-		string withProperties = GetAllWithProperties(generatorInformation);
+		string fieldBackers = GetAllFieldBackers(interfaceInformation);
+		string withProperties = GetAllWithProperties(builderName, interfaceInformation);
+		string builderConstructor = GetConstructor(interfaceInformation);
+		string typical = GetTypical(builderName, interfaceInformation);
 
 		return $@"#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
 #nullable disable
@@ -113,11 +250,7 @@ internal static class GenerateBuilder
 // </auto-generated>
 // ================================================================================
 
-using {attributeNamespace};
-
 namespace {classInformation!.Namespace};
-
-using {attributeNamespace};
 
 public partial class {classInformation.ClassName} : Builder<{interfaceInformation!.ClassName}>
 {{
@@ -126,12 +259,8 @@ public partial class {classInformation.ClassName} : Builder<{interfaceInformatio
     public override {interfaceInformation.ClassName} Build()
     {{
         if (BuilderObject?.IsValueCreated != true)
-        {{
-            BuilderObject = new Lazy<{interfaceInformation.ClassName}>(new {interfaceInformation.ClassName}
-            {{
-{objectAssignment}
-            }});
-        }}
+        {{{builderConstructor}
+		}}
 
         PostBuild(BuilderObject.Value);
 
@@ -148,55 +277,60 @@ public partial class {classInformation.ClassName} : Builder<{interfaceInformatio
         return new {classInformation.ClassName}();
     }}
 
+
     //
     //  With Properties
     //
 {withProperties}
 }}
 
+{typical}
 #nullable restore
-#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.";
+#pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
+";
 	}
 
 
-	public static string GetAllFieldBackers(ClassInformation classInfo)
+	public static string GetAllFieldBackers(InterfaceInformation classInfo)
 	{
-		StringBuilder sb = new StringBuilder(10000);
+		var sb = new StringBuilder(10000);
 
-		foreach (PropertyInformation item in classInfo.Properties)
+		foreach (ClassMember item in classInfo.Properties)
 			sb.AppendLine(GetFieldBackers(item));
 
 		return sb.ToString();
 	}
 
 
-	public static string GetFieldBackers(PropertyInformation property)
+	public static string GetFieldBackers(ClassMember property)
 	{
 		return $"\tprivate Lazy<{property.DataType}> {property.FieldName} = new (default({property.DataType}));";
 	}
 
 
-	private static string GetAllObjectAssignment(ClassInformation classInfo)
+	private static string GetAllObjectAssignment(List<ClassMember> properties, bool includeObjectName = false)
 	{
 		StringBuilder sb = new StringBuilder(10000);
 
-		foreach (PropertyInformation item in classInfo.Properties)
-			sb.AppendLine(GetObjectAssignment(item));
+		foreach (ClassMember item in properties)
+			sb.AppendLine(ConstructorPropertyAssignment(item, includeObjectName));
 
-		if (sb.Length > 3)
-			sb.Length -= 3;
+		if (!includeObjectName && sb.Length > 3)
+			sb.Length -= (NewlineLength() + 1);
 
 		return sb.ToString();
 	}
 
 
-	private static string GetObjectAssignment(PropertyInformation property)
+	private static string ConstructorPropertyAssignment(ClassMember property, bool includeObjectName = false)
 	{
-		return $"\t\t\t\t{property.PropertyName} = {property.FieldName}.Value,";
+		return includeObjectName
+			? $"\t\t\t\tobj.{property.PropertyName} = {property.FieldName}.Value;"
+			: $"\t\t\t\t{property.PropertyName} = {property.FieldName}.Value,";
 	}
 
 
-	private static string GetWithProperties(string builderName, PropertyInformation property)
+	private static string GetWithProperties(string builderName, ClassMember property)
 	{
 		return $@"
     public {builderName} With{property.PropertyName}({property.DataType} value)
@@ -213,7 +347,7 @@ public partial class {classInformation.ClassName} : Builder<{interfaceInformatio
 	}
 
 
-	private static string GetRemoveProperties(string builderName, PropertyInformation property)
+	private static string GetRemoveProperties(string builderName, ClassMember property)
 	{
 		return $@"
     public {builderName} SetDefault{property.PropertyName}({property.DataType} newValue = default)
@@ -224,20 +358,178 @@ public partial class {classInformation.ClassName} : Builder<{interfaceInformatio
 ";
 	}
 
-	private static string GetAllWithProperties(GeneratorInformation generatorInformation)
+	private static string GetAllWithProperties(string builderName, InterfaceInformation interfaceInformation)
 	{
 		StringBuilder sb = new StringBuilder(10000);
 
-		foreach (PropertyInformation item in generatorInformation.InterfaceInformation!.Properties)
+		foreach (ClassMember item in interfaceInformation.Properties)
 		{
-			sb.Append(GetWithProperties(generatorInformation.ClassInformation!.ClassName, item));
-			sb.Append(GetRemoveProperties(generatorInformation.ClassInformation.ClassName, item));
+			sb.Append(GetWithProperties(builderName, item));
+			sb.Append(GetRemoveProperties(builderName, item));
 		}
 
-		if (sb.Length > 2)
-			sb.Length -= 2;
+		if (sb.Length > NewlineLength())
+			sb.Length -= NewlineLength();
 
 		return sb.ToString();
+	}
+
+
+	private static string GetConstructor(InterfaceInformation interfaceInformation)
+	{
+		var constructors = interfaceInformation.Constructors
+			.OrderBy(c => -((int)c.Accessibility))
+			.ThenBy(c => c.Parameters.Count)
+			.ToList();
+
+		foreach (var c in constructors)
+		{
+			if (c.IsParameterless)
+				return CreateParameterlessConstructor(c, interfaceInformation);
+
+			if (FoundMatchingParameters(c, interfaceInformation))
+				return CreateParameterConstructor(c, interfaceInformation);
+		}
+
+
+		return $@"{GetConstructorOverride(interfaceInformation)}";
+	}
+
+
+
+	private static bool FoundMatchingParameters(ConstructorInformation c, InterfaceInformation interfaceInformation)
+	{
+		return c.Parameters.All(p =>
+		{
+			var classParameter = interfaceInformation.Properties.FirstOrDefault(
+				cp => string.Equals(cp.PropertyName, p.ParameterName, StringComparison.InvariantCultureIgnoreCase));
+
+			return classParameter != null && classParameter.DataType == p.DataType;
+		});
+	}
+
+
+
+	private static string CreateParameterlessConstructor(ConstructorInformation c, InterfaceInformation interfaceInformation)
+	{
+		var isPrivate = c.Accessibility == Accessibility.Private;
+
+		string objectAssignment = GetAllObjectAssignment(interfaceInformation!.Properties, isPrivate);
+
+		if (isPrivate)
+		{
+			return $@"
+			// Private
+            BuilderObject = new Lazy<{interfaceInformation.ClassName}>(() =>
+			{{
+				var obj = CreateInstance();
+
+{objectAssignment}
+				return obj;
+			}});";
+		}
+
+		return $@"
+			// Public
+			BuilderObject = new Lazy<{interfaceInformation.ClassName}>(new {interfaceInformation.ClassName}
+			{{
+{objectAssignment}
+			}});";
+
+	}
+
+
+	private static string CreateParameterConstructor(ConstructorInformation c, InterfaceInformation interfaceInformation)
+	{
+		var isPrivate = c.Accessibility == Accessibility.Private;
+
+		// Match Constructor Parameter to Property
+		var properties = interfaceInformation!.Properties;
+		var parameters = c.Parameters.Select(c =>
+			new KeyValuePair<ConstructorParameters, ClassMember>(c,
+				properties.First(p => string.Equals(p.PropertyName, c.ParameterName, StringComparison.CurrentCultureIgnoreCase))))
+			.ToList();
+
+		// Exclude Constructor Parameters from being set again
+		var exclusions = parameters.Select(p => p.Value);
+		properties = properties.Except(exclusions).ToList();
+
+		string ctorParameters = GetConstructorParameters(parameters);
+		string objectAssignment = GetAllObjectAssignment(properties, isPrivate);
+
+
+		if (isPrivate)
+		{
+			return $@"
+			// Private
+            BuilderObject = new Lazy<{interfaceInformation.ClassName}>(() =>
+			{{
+				var obj = CreateInstance({ctorParameters});
+
+{objectAssignment}
+				return obj;
+			}});";
+		}
+
+		return $@"
+			// Public
+			BuilderObject = new Lazy<{interfaceInformation.ClassName}>(new {interfaceInformation.ClassName}({ctorParameters})
+			{{
+{objectAssignment}
+			}});";
+
+	}
+
+
+	private static string GetConstructorParameters(List<KeyValuePair<ConstructorParameters, ClassMember>> parameters)
+	{
+		var sb = new StringBuilder(500);
+
+		var count = parameters.Count;
+
+		for (var i = 0; i < count - 1; i++)
+			sb.AppendFormat("{0}.Value, ", parameters[i].Value.FieldName);
+
+		sb.AppendFormat("{0}.Value", parameters[count - 1].Value.FieldName);
+
+		return sb.ToString();
+	}
+
+
+	private static string GetConstructorOverride(InterfaceInformation interfaceInformation)
+	{
+		return $@"
+			// Couldn't create constructor.  
+			// Please Override Construct() in the partial Builder class
+			// 	protected override <class> Construct() => CreateInstance(_param1.Value, _param2.Value, etc. );
+
+            BuilderObject = new Lazy<{interfaceInformation.ClassName}>(() => Construct());";
+	}
+
+
+	private static string GetTypical(string builderName, InterfaceInformation interfaceInformation)
+	{
+		if (!interfaceInformation.GenerateSample)
+			return string.Empty;
+
+		var sb = new StringBuilder(1000);
+
+		interfaceInformation.Properties.ForEach(p => sb.AppendLine($"\t\t\t.With{p.PropertyName}(default({p.DataType}))"));
+		sb.Length -= NewlineLength();
+
+
+		return $@"
+/*
+
+	public static {builderName} Typical()
+	{{
+		return new {builderName}()
+{sb}
+			;
+	}}
+
+*/
+";
 	}
 }
 

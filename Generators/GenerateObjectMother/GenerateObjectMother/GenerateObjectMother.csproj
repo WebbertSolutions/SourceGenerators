@@ -20,16 +20,6 @@
     <Company>Webbert Solutions, LLC</Company>
     <Description>A source code generator for creating object mothers for use in creating test code.</Description>
   </PropertyGroup>
-  
-  <ItemGroup>
-    <Compile Include="..\..\_CommonCode\BaseGenerator\BaseGenerator.cs" Link="BaseClass\BaseGenerator.cs" />
-    <Compile Include="..\..\_CommonCode\BaseGenerator\Comparers\ClassInformationComparer.cs" Link="BaseClass\Comparers\ClassInformationComparer.cs" />
-    <Compile Include="..\..\_CommonCode\BaseGenerator\Comparers\GeneratorInformationComparer.cs" Link="BaseClass\Comparers\GeneratorInformationComparer.cs" />
-    <Compile Include="..\..\_CommonCode\BaseGenerator\Models\ClassInformation.cs" Link="BaseClass\Models\ClassInformation.cs" />
-    <Compile Include="..\..\_CommonCode\BaseGenerator\Models\GeneratorInformation.cs" Link="BaseClass\Models\GeneratorInformation.cs" />
-    <Compile Include="..\..\_CommonCode\BaseGenerator\Models\PropertyInformation.cs" Link="BaseClass\Models\PropertyInformation.cs" />
-    <Compile Include="..\..\_CommonCode\GenericInterfaces\GenerateInterfaceWithType.cs" Link="Generators\GenerateInterfaceWithType.cs" />
-  </ItemGroup>
 
   <PropertyGroup>
     <TargetsForTfmSpecificContentInPackage>$(TargetsForTfmSpecificContentInPackage);_AddAnalyzersToOutput</TargetsForTfmSpecificContentInPackage>
@@ -42,7 +32,8 @@
   </Target>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.8.0" />
+    <PackageReference Include="Microsoft.Bcl.HashCode" Version="1.1.1" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.7.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -59,11 +50,6 @@
 
   <ItemGroup>
     <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="BaseClass\Comparers\" />
-    <Folder Include="BaseClass\Models\" />
   </ItemGroup>
 
 </Project>
