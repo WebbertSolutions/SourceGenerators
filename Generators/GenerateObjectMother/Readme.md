@@ -40,16 +40,16 @@ At the bottom of the generated code you will see something like the follow which
 
 ````
 /*
-    public static AddressBuilder Typical()
-    {
-        return new AddressBuilder()
-            .WithAddress1(default(string))
-            .WithAddress2(default(string))
-            .WithCity(default(string))
-            .WithState(default(GenerateObjectMotherTest.Models.State))
-            .WithPostalCode(default(string))
-            ;
-    }
+public static AddressBuilder Typical()
+{
+    return new AddressBuilder()
+        .WithAddress1(default(string))
+        .WithAddress2(default(string))
+        .WithCity(default(string))
+        .WithState(default(GenerateObjectMotherTest.Models.State))
+        .WithPostalCode(default(string))
+        ;
+}
 */
 ````
 
@@ -63,30 +63,38 @@ You may need to create a list of objects.
 Create a helper method like the following.
 
 ````
-    public static Func<List<Address>> GenerateAddresses(int min, int max, AddressBuilder? builder = null)
-        => GenerateData(min, max, builder ?? Typical());
+public static Func<List<Address>> GenerateAddresses(int min, int max, AddressBuilder? builder = null)
+    => GenerateData(min, max, builder ?? Typical());
 ````
 
 Then you can call it from where you need it
 
 ````
-    public static PersonBuilder Typical()
-    {
-        return new PersonBuilder()
-            .WithFirstName(GetRandomValue.String(10, 50))
-            .WithLastName("The Builder")
-            .WithAddresses(AddressBuilder.GenerateAddresses(1, 3))
-            ;
-    }
+public static PersonBuilder Typical()
+{
+    return new PersonBuilder()
+        .WithFirstName(GetRandomValue.String(10, 50))
+        .WithLastName("The Builder")
+        .WithAddresses(AddressBuilder.GenerateAddresses(1, 3))
+        ;
+}
 ````
-
-
-
 
 </br>
 
+## Class Constructors
+
+The generator will instantiate an object using the best constructor based on this order
+- public  - without parameters
+- public  - with parameters
+- private - without parameters - **override Construct() required**
+- private - with parameters - **override Construct() required**
+- can't determine constructor - **override Construct() required**
+
+</br>
 
 ## Private Constructors
+
 If a builder is generating code on a class that ***only*** has a private constructor, you will have to add an override.  There is an issue where private constructors are not added to metadata and therefore not available under all instances.  You can read more about the issue here: https://github.com/dotnet/roslyn/issues/72473
 
 In an effort to help with this, you can look at the generated code and you will see in the Build() method the code you will need to copy/paste into the non-generated partial class.

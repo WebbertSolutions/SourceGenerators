@@ -3,18 +3,21 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.8.34322.80
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".Solution Items", ".Solution Items", "{8296B272-E2F7-4DAE-AC1F-C8D7F185B9B3}"
-	ProjectSection(SolutionItems) = preProject
-		.editorconfig = .editorconfig
-	EndProjectSection
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Object Mothers", "Object Mothers", "{B622D96C-706C-414D-9531-D4590A366960}"
+	ProjectSection(SolutionItems) = preProject
+		Generators\GenerateObjectMother\Readme.md = Generators\GenerateObjectMother\Readme.md
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GenerateObjectMother", "Generators\GenerateObjectMother\GenerateObjectMother\GenerateObjectMother.csproj", "{A0A0F812-7BA9-4041-9860-E4927CAF9300}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GenerateObjectMotherTest", "Generators\GenerateObjectMother\GenerateObjectMotherTest\GenerateObjectMotherTest.csproj", "{49FFCD63-C0CC-4DB1-ABE7-F1F354FA4682}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GenerateObjectMotherTest.Models", "Generators\GenerateObjectMother\GenerateObjectMotherTest.Models\GenerateObjectMotherTest.Models.csproj", "{EDB6C80A-91F5-463E-8CA5-24A24400DD92}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{7415237F-CCAC-40F9-B79D-084355F193E0}"
+	ProjectSection(SolutionItems) = preProject
+		Readme.md = Readme.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
