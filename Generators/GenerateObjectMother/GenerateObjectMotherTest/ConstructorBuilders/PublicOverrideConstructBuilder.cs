@@ -18,6 +18,21 @@ public partial class PublicOverrideConstructBuilder
 	public static Func<List<PublicOverrideConstruct>> GeneratePublicOverrideConstructs(int min, int max, PublicOverrideConstructBuilder? builder = null)
 		=> GenerateData(min, max, builder ?? Typical());
 
-	protected override PublicOverrideConstruct Construct()
-		=> CreateInstance(_address1.Value);
+	protected override Lazy<PublicOverrideConstruct> Construct()
+	{
+		return new Lazy<PublicOverrideConstruct>(() =>
+		{
+			var obj = CreateInstance(_address1.Value);
+
+			obj.Address2 = _address2.Value;
+			obj.City = _city.Value;
+			obj.State = _state.Value;
+			obj.PostalCode = _postalCode.Value;
+
+			return obj;
+		});
+	}
+
+
+
 }

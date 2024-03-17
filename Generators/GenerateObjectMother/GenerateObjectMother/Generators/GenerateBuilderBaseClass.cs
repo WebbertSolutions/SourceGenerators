@@ -17,7 +17,7 @@ public abstract class Builder<T> where T : class
 
 	public abstract T Build();
 
-	protected virtual T Construct() => null!;
+	protected virtual Lazy<T> Construct() => null!;
 
 
 	public Builder<T> WithObject(T value)

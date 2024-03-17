@@ -101,7 +101,7 @@ public partial class {classInformation.ClassName} : Builder<{interfaceInformatio
 	private static string ConstructorPropertyAssignment(ClassMember property, bool includeObjectName = false)
 	{
 		return includeObjectName
-			? $"\t\t\t\tobj.{property.PropertyName} = {property.FieldName}.Value;"
+			? $"\t\t\t\t\tobj.{property.PropertyName} = {property.FieldName}.Value;"
 			: $"\t\t\t\t{property.PropertyName} = {property.FieldName}.Value,";
 	}
 
@@ -195,14 +195,25 @@ public partial class {classInformation.ClassName} : Builder<{interfaceInformatio
 		if (isPrivate)
 		{
 			return $@"
-			// Private
-            BuilderObject = new Lazy<{interfaceInformation.ClassName}>(() =>
+			#if SomethingRandom
+
+			// Please copy the following override into the non generated Builder class
+
+			protected override Lazy<{interfaceInformation.ClassName}> Construct()
 			{{
-				var obj = CreateInstance();
+				return new Lazy<{interfaceInformation.ClassName}>(() =>
+				{{
+					var obj = CreateInstance();
 
 {objectAssignment}
-				return obj;
-			}});";
+					return obj;
+				}});
+			}}
+
+			#endif
+
+			BuilderObject = Construct()
+";
 		}
 
 		return $@"
@@ -237,14 +248,25 @@ public partial class {classInformation.ClassName} : Builder<{interfaceInformatio
 		if (isPrivate)
 		{
 			return $@"
-			// Private
-            BuilderObject = new Lazy<{interfaceInformation.ClassName}>(() =>
+			#if SomethingRandom
+
+			// Please copy the following override into the non generated Builder class
+
+			protected override Lazy<{interfaceInformation.ClassName}> Construct()
 			{{
-				var obj = CreateInstance({ctorParameters});
+				return new Lazy<{interfaceInformation.ClassName}>(() =>
+				{{
+					var obj = CreateInstance({ctorParameters});
 
 {objectAssignment}
-				return obj;
-			}});";
+					return obj;
+				}});
+			}}
+
+			#endif
+
+			BuilderObject = Construct()
+";
 		}
 
 		return $@"
@@ -275,11 +297,33 @@ public partial class {classInformation.ClassName} : Builder<{interfaceInformatio
 	private static string GetConstructorOverride(InterfaceInformation interfaceInformation)
 	{
 		return $@"
-			// Couldn't create constructor.  
-			// Please Override Construct() in the partial Builder class
-			// 	protected override <class> Construct() => CreateInstance(_param1.Value, _param2.Value, etc. );
+			#if SomethingRandom
+			
+			// Can't find constructor
 
-            BuilderObject = new Lazy<{interfaceInformation.ClassName}>(() => Construct());";
+			// Please Override Construct() in the non generated Builder class
+
+			// You will need something like the following
+
+			protected override Lazy<{interfaceInformation.ClassName}> Construct()
+			{{
+				return new Lazy<{interfaceInformation.ClassName}>(() =>
+				{{
+					var obj = CreateInstance(_parm1.Value, _parm2.Value, _parm3.Value);
+
+					obj.Parm4 = _parm4.Value;
+					obj.Parm5 = _parm5.Value;
+
+					return obj;
+				}});
+			}}
+
+			#endif
+
+			BuilderObject = Construct();
+";
+
+
 	}
 
 

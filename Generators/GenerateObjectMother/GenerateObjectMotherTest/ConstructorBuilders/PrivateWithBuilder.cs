@@ -17,4 +17,17 @@ public partial class PrivateWithBuilder
 
 	public static Func<List<PrivateWith>> GeneratePrivateWiths(int min, int max, PrivateWithBuilder? builder = null)
 		=> GenerateData(min, max, builder ?? Typical());
+
+	protected override Lazy<PrivateWith> Construct()
+	{
+		return new Lazy<PrivateWith>(() =>
+		{
+			var obj = CreateInstance(_address1.Value, _city.Value, _postalCode.Value);
+
+			obj.Address2 = _address2.Value;
+			obj.State = _state.Value;
+
+			return obj;
+		});
+	}
 }
