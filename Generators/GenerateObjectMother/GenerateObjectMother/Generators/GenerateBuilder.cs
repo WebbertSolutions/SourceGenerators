@@ -26,6 +26,8 @@ internal static class GenerateBuilder
 // </auto-generated>
 // ================================================================================
 
+using WS.Gen.ObjectMother;
+
 namespace {classInformation!.Namespace};
 
 public partial class {classInformation.ClassName} : Builder<{interfaceInformation!.ClassName}>
