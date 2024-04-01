@@ -18,11 +18,19 @@
     <Title>Object Mother Generator</Title>
     <Authors>David Elliott</Authors>
     <Company>Webbert Solutions, LLC</Company>
-    <Description>A source code generator for creating object mothers for use in creating test code.</Description>
+    <Description>A source code generator used to create/maintain fluent builders to instantiate objects used during the testing process.</Description>
   </PropertyGroup>
 
   <PropertyGroup>
     <TargetsForTfmSpecificContentInPackage>$(TargetsForTfmSpecificContentInPackage);_AddAnalyzersToOutput</TargetsForTfmSpecificContentInPackage>
+    <PackageProjectUrl>https://github.com/WebbertSolutions/SourceGenerators/tree/main/Generators/GenerateObjectMother</PackageProjectUrl>
+    <PackageReadmeFile>Readme.md</PackageReadmeFile>
+    <RepositoryUrl>https://github.com/WebbertSolutions/SourceGenerators</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>generator test builder</PackageTags>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
+    <PackageId>WS.Gen.ObjectMother</PackageId>
   </PropertyGroup>
 
   <Target Name="_AddAnalyzersToOutput">
@@ -30,6 +38,13 @@
       <TfmSpecificPackageFile Include="$(OutputPath)\$(AssemblyName).dll" PackagePath="analyzers/dotnet/cs" />
     </ItemGroup>
   </Target>
+
+  <ItemGroup>
+    <None Include="..\Readme.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Bcl.HashCode" Version="1.1.1" />
