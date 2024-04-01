@@ -24,7 +24,7 @@
   <PropertyGroup>
     <TargetsForTfmSpecificContentInPackage>$(TargetsForTfmSpecificContentInPackage);_AddAnalyzersToOutput</TargetsForTfmSpecificContentInPackage>
     <PackageProjectUrl>https://github.com/WebbertSolutions/SourceGenerators/tree/main/Generators/GenerateObjectMother</PackageProjectUrl>
-    <PackageReadmeFile>Readme.md</PackageReadmeFile>
+    <PackageReadmeFile>Package.md</PackageReadmeFile>
     <RepositoryUrl>https://github.com/WebbertSolutions/SourceGenerators</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageTags>generator test builder</PackageTags>
@@ -40,7 +40,7 @@
   </Target>
 
   <ItemGroup>
-    <None Include="..\Readme.md">
+    <None Include="..\Package.md">
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
     </None>

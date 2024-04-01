@@ -5,6 +5,7 @@ VisualStudioVersion = 17.8.34322.80
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Object Mothers", "Object Mothers", "{B622D96C-706C-414D-9531-D4590A366960}"
 	ProjectSection(SolutionItems) = preProject
+		Generators\GenerateObjectMother\Package.md = Generators\GenerateObjectMother\Package.md
 		Generators\GenerateObjectMother\Readme.md = Generators\GenerateObjectMother\Readme.md
 	EndProjectSection
 EndProject
