@@ -8,6 +8,7 @@ public class ClassMember
 	public string PropertyName { get; set; } = string.Empty;
 	public string FieldName => GetFieldName();
 
+	public bool IsReadOnly { get; set; }	
 	public bool IsValueType { get; set; }
 	public bool IsGenericType { get; set; }
 	public bool IsCollection { get; set; }

@@ -94,6 +94,7 @@ public abstract class BaseGenerator<T> : IIncrementalGenerator where T: class
 					Accessibility = ps.DeclaredAccessibility,
 					DataType = ps.Type.ToDisplayString(),
 					PropertyName = ps.Name,
+					IsReadOnly = ps.IsReadOnly,
 					IsValueType = ps.Type.IsValueType,
 					IsGenericType = nts?.IsGenericType ?? false,
 					IsCollection = ps.Type.ContainingModule.ToDisplayString().Contains("Collection")
@@ -115,6 +116,7 @@ public abstract class BaseGenerator<T> : IIncrementalGenerator where T: class
 					Accessibility = fs.DeclaredAccessibility,
 					DataType = fs.Type.ToDisplayString(),
 					PropertyName = fs.Name,
+					IsReadOnly = fs.IsReadOnly,
 					IsValueType = fs.Type.IsValueType,
 					IsGenericType = nts?.IsGenericType ?? false,
 					IsCollection = fs.Type.ContainingModule.ToDisplayString().Contains("Collection")

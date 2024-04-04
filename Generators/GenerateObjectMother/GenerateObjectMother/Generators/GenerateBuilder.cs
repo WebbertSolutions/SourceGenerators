@@ -74,7 +74,12 @@ public partial class {classInformation.ClassName} : Builder<{interfaceInformatio
 		var sb = new StringBuilder(10000);
 
 		foreach (ClassMember item in classInfo.Properties)
+		{
+			if (item.IsReadOnly)
+				continue;
+
 			sb.AppendLine(GetFieldBackers(item));
+		}
 
 		return sb.ToString();
 	}
@@ -91,7 +96,12 @@ public partial class {classInformation.ClassName} : Builder<{interfaceInformatio
 		StringBuilder sb = new StringBuilder(10000);
 
 		foreach (ClassMember item in properties)
+		{
+			if (item.IsReadOnly)
+				continue;
+
 			sb.AppendLine(ConstructorPropertyAssignment(item, includeObjectName));
+		}
 
 		if (!includeObjectName && sb.Length > 3)
 			sb.Length -= (NewlineLength() + 1);
@@ -142,6 +152,9 @@ public partial class {classInformation.ClassName} : Builder<{interfaceInformatio
 
 		foreach (ClassMember item in interfaceInformation.Properties)
 		{
+			if (item.IsReadOnly)
+				continue;
+
 			sb.Append(GetWithProperties(builderName, item));
 			sb.Append(GetRemoveProperties(builderName, item));
 		}
