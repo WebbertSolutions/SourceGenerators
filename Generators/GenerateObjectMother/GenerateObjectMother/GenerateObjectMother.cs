@@ -29,27 +29,46 @@ public class ObjectMotherGenerator : BaseGenerator<GeneratorInformation>
 		return new ClassInformation
 		{
 			Namespace = GetNamespace(classSymbol),
-			ClassName = GetClassName(classSymbol)
+			ClassName = GetClassName(classSymbol),
+			NullableContextOptions = GetNullableContextOptions(classSymbol)
 		};
 	}
+
 
 
 	protected InterfaceInformation ProcessAttributeClassParameter(AttributeData generatorInterface)
 	{
 		var classSymbol = (INamedTypeSymbol?)generatorInterface?.ConstructorArguments[0].Value!;
+		var generateSample = (bool)generatorInterface?.ConstructorArguments[1].Value!;
 
-		return new InterfaceInformation
+		return GetInterfaceInformation(generateSample, classSymbol);
+	}
+
+
+	private static InterfaceInformation GetInterfaceInformation(bool generateSample, INamedTypeSymbol classSymbol)
+		=> new()
 		{
-			GenerateSample = (bool)generatorInterface?.ConstructorArguments[1].Value!,
+			GenerateSample = generateSample,
 
 			Namespace = GetNamespace(classSymbol),
 			ClassName = GetClassName(classSymbol),
 			Constructors = GetConstructorInformation(classSymbol),
 			Properties = GetPropertyInformation(classSymbol),
-			Fields = GetFieldInformation(classSymbol)
-		};
-	}
+			Fields = GetFieldInformation(classSymbol),
 
+			Inherited = GetInheritedInformation(generateSample, classSymbol.BaseType)
+		};
+
+
+	private static InterfaceInformation? GetInheritedInformation(bool generateSample, INamedTypeSymbol? classSymbol)
+	{
+		if (classSymbol == null || classSymbol.SpecialType != SpecialType.None)
+			return null;
+
+		
+		return GetInterfaceInformation(generateSample, classSymbol);
+
+	}
 
 	protected override void GenerateTemplate(SourceProductionContext context, GeneratorInformation generatorInformation)
 	{

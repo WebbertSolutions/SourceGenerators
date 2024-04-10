@@ -124,4 +124,12 @@ public abstract class BaseGenerator<T> : IIncrementalGenerator where T: class
 			})
 			.ToList();
 	}
+
+
+	protected static NullableContextOptions GetNullableContextOptions(INamedTypeSymbol classSymbol)
+	{
+		var assembly = classSymbol.ContainingModule.ContainingAssembly as ISourceAssemblySymbol;
+	
+		return assembly?.Compilation.Options.NullableContextOptions ?? NullableContextOptions.Disable;
+	}
 }

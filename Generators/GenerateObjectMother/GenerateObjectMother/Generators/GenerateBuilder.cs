@@ -14,6 +14,7 @@ internal static class GenerateBuilder
 		string typical = GetTypical(builderName, interfaceInformation);
 
 		return $@"#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
+#pragma warning disable CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
 #nullable disable
 
 // ================================================================================
@@ -65,21 +66,25 @@ public partial class {classInformation.ClassName} : Builder<{interfaceInformatio
 {typical}
 #nullable restore
 #pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
+#pragma warning restore CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
 ";
 	}
 
 
-	public static string GetAllFieldBackers(InterfaceInformation classInfo)
+	public static string GetAllFieldBackers(InterfaceInformation interfaceInformation)
 	{
 		var sb = new StringBuilder(10000);
 
-		foreach (ClassMember item in classInfo.Properties)
+		foreach (ClassMember item in interfaceInformation.Properties)
 		{
-			if (item.IsReadOnly)
+			if (item.IsReadOnly || item.Accessibility != Accessibility.Public)
 				continue;
 
 			sb.AppendLine(GetFieldBackers(item));
 		}
+
+		if (interfaceInformation.Inherited != null)
+			sb.AppendLine(GetAllFieldBackers(interfaceInformation.Inherited));
 
 		return sb.ToString();
 	}
@@ -97,7 +102,7 @@ public partial class {classInformation.ClassName} : Builder<{interfaceInformatio
 
 		foreach (ClassMember item in properties)
 		{
-			if (item.IsReadOnly)
+			if (item.IsReadOnly || item.Accessibility != Accessibility.Public)
 				continue;
 
 			sb.AppendLine(ConstructorPropertyAssignment(item, includeObjectName));
@@ -152,12 +157,15 @@ public partial class {classInformation.ClassName} : Builder<{interfaceInformatio
 
 		foreach (ClassMember item in interfaceInformation.Properties)
 		{
-			if (item.IsReadOnly)
+			if (item.IsReadOnly || item.Accessibility != Accessibility.Public)
 				continue;
 
 			sb.Append(GetWithProperties(builderName, item));
 			sb.Append(GetRemoveProperties(builderName, item));
 		}
+
+		if (interfaceInformation.Inherited != null)
+			sb.AppendLine(GetAllWithProperties(builderName, interfaceInformation.Inherited));
 
 		if (sb.Length > NewlineLength())
 			sb.Length -= NewlineLength();
@@ -204,8 +212,9 @@ public partial class {classInformation.ClassName} : Builder<{interfaceInformatio
 	private static string CreateParameterlessConstructor(ConstructorInformation c, InterfaceInformation interfaceInformation)
 	{
 		var isPrivate = c.Accessibility == Accessibility.Private;
+		var properties = GetAllProperties(interfaceInformation);
 
-		string objectAssignment = GetAllObjectAssignment(interfaceInformation!.Properties, isPrivate);
+		string objectAssignment = GetAllObjectAssignment(properties, isPrivate);
 
 		if (isPrivate)
 		{
@@ -241,12 +250,27 @@ public partial class {classInformation.ClassName} : Builder<{interfaceInformatio
 	}
 
 
+	private static List<ClassMember> GetAllProperties(InterfaceInformation interfaceInformation)
+	{
+		var list = new List<ClassMember>();
+		var temp = interfaceInformation;
+
+		while (temp != null)
+		{
+			list.AddRange(temp.Properties);
+			temp = temp.Inherited;
+		}
+
+		return list;
+	}
+
+
 	private static string CreateParameterConstructor(ConstructorInformation c, InterfaceInformation interfaceInformation)
 	{
 		var isPrivate = c.Accessibility == Accessibility.Private;
 
 		// Match Constructor Parameter to Property
-		var properties = interfaceInformation!.Properties;
+		var properties = GetAllProperties(interfaceInformation);
 		var parameters = c.Parameters.Select(c =>
 			new KeyValuePair<ConstructorParameters, ClassMember>(c,
 				properties.First(p => string.Equals(p.PropertyName, c.ParameterName, StringComparison.CurrentCultureIgnoreCase))))
@@ -349,7 +373,11 @@ public partial class {classInformation.ClassName} : Builder<{interfaceInformatio
 
 		var sb = new StringBuilder(1000);
 
-		interfaceInformation.Properties.ForEach(p => sb.AppendLine($"\t\t\t.With{p.PropertyName}(default({p.DataType}))"));
+		var properties = GetAllProperties( interfaceInformation)
+			.Where(p => !p.IsReadOnly && p.Accessibility == Accessibility.Public)
+			.ToList();
+
+		properties.ForEach(p => sb.AppendLine($"\t\t\t.With{p.PropertyName}(default({p.DataType}))"));
 		sb.Length -= NewlineLength();
 
 

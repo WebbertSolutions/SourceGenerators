@@ -10,4 +10,6 @@ public class InterfaceInformation
 	public List<ConstructorInformation> Constructors { get; set; } = new();
 	public List<ClassMember> Properties { get; set; } = new();
 	public List<ClassMember> Fields { get; set; } = new();
+
+	public InterfaceInformation? Inherited;
 }
