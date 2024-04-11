@@ -97,7 +97,7 @@ public abstract class BaseGenerator<T> : IIncrementalGenerator where T: class
 					IsReadOnly = ps.IsReadOnly,
 					IsValueType = ps.Type.IsValueType,
 					IsGenericType = nts?.IsGenericType ?? false,
-					IsCollection = ps.Type.ContainingModule.ToDisplayString().Contains("Collection")
+					IsCollection = ps.Type.ContainingModule?.ToDisplayString().Contains("Collection") ?? false
 				};
 			})
 			.ToList();
@@ -119,7 +119,7 @@ public abstract class BaseGenerator<T> : IIncrementalGenerator where T: class
 					IsReadOnly = fs.IsReadOnly,
 					IsValueType = fs.Type.IsValueType,
 					IsGenericType = nts?.IsGenericType ?? false,
-					IsCollection = fs.Type.ContainingModule.ToDisplayString().Contains("Collection")
+					IsCollection = fs.Type.ContainingModule?.ToDisplayString().Contains("Collection") ?? false
 				};
 			})
 			.ToList();
