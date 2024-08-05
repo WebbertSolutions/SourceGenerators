@@ -14,7 +14,7 @@
     <NoPackageAnalysis>true</NoPackageAnalysis>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <IncludeBuildOutput>false</IncludeBuildOutput>
-    <Version>1.0.4</Version>
+    <Version>1.0.5</Version>
     <Title>Object Mother Generator</Title>
     <Authors>David Elliott</Authors>
     <Company>Webbert Solutions, LLC</Company>
