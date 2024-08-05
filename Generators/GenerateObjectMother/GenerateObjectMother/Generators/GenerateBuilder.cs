@@ -13,8 +13,10 @@ internal static class GenerateBuilder
 		string builderConstructor = GetConstructor(interfaceInformation);
 		string typical = GetTypical(builderName, interfaceInformation);
 
-		return $@"#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
+		return $@"
+#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
 #pragma warning disable CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
+#pragma warning disable CS8669 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context. Auto-generated code requires an explicit '#nullable' directive in source.
 #nullable disable
 
 // ================================================================================
@@ -67,6 +69,7 @@ public partial class {classInformation.ClassName} : Builder<{interfaceInformatio
 #nullable restore
 #pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
 #pragma warning restore CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
+#pragma warning restore CS8669 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context. Auto-generated code requires an explicit '#nullable' directive in source.
 ";
 	}
 
