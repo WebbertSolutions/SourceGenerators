@@ -6,6 +6,8 @@
 # Project Specific Files
 BuilderTemplate.txt
 
+Generators/GenerateAudit
+**/Templates/*.cs
 
 # User-specific files
 *.rsuser

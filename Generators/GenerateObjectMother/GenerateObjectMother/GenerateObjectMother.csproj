@@ -52,14 +52,29 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="Templates\BuilderTemplate.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>BuilderTemplate.txt</LastGenOutput>
-    </None>
     <None Update="Templates\BuilderTemplate.txt">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>BuilderTemplate.tt</DependentUpon>
+    </None>
+    <None Update="Templates\Functions.t4">
+      <Generator></Generator>
+    </None>
+    <None Update="Templates\RunMethod.t4">
+      <Generator></Generator>
+    </None>
+    <None Update="Templates\Structures.t4">
+      <Generator></Generator>
+    </None>
+    <None Update="Templates\Template.t4">
+      <Generator></Generator>
+    </None>
+    <None Update="Templates\Enumerations.t4">
+      <Generator></Generator>
+    </None>
+    <None Update="Templates\BuilderTemplate.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>BuilderTemplate.txt</LastGenOutput>
     </None>
   </ItemGroup>
 
