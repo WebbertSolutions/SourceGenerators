@@ -7,6 +7,7 @@
 <#@ include file="Enumerations.t4" #>
 <#@ include file="Functions.t4" #>
 <#@ include file="Structures.t4" #>
+<#@ include file="Data.t4" #>
 <#@ include file="RunMethod.t4" #>
 <#@ include file="Template.t4" #>
 <#= Run() #>

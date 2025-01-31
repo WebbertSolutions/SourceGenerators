@@ -57,6 +57,9 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>BuilderTemplate.tt</DependentUpon>
     </None>
+    <None Update="Templates\Data.t4">
+      <Generator></Generator>
+    </None>
     <None Update="Templates\Functions.t4">
       <Generator></Generator>
     </None>

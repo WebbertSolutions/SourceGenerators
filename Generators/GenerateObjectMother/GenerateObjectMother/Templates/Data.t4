@@ -1,0 +1,102 @@
+﻿<#+
+
+private static GeneratorInformation GetData()
+{
+	return new GeneratorInformation
+	{
+		ClassInformation = new ClassInformation
+		{
+			Namespace = "RandomTestDataApp.Generator",
+			ClassName = "PostalAddressBuilder"
+		},
+		InterfaceInformation = new InterfaceInformation
+		{
+			Namespace = "RandomTestDataApp",
+			ClassName = "PostalAddress",
+
+			Constructors = new()
+			{
+				PublicWithoutParameters()
+				//PublicWithParameters()
+				//PrivateWithoutParameters()
+				//PrivateWithParameters()
+				//PrivateCannotFindConstructor()
+			},
+
+			Properties = new()
+			{
+				new ClassMember { Accessibility = Accessibility.Public, DataType = "string", PropertyName = "Address1"   },
+				new ClassMember { Accessibility = Accessibility.Public, DataType = "string", PropertyName = "Address2"   },
+				new ClassMember { Accessibility = Accessibility.Public, DataType = "string", PropertyName = "City"       },
+				new ClassMember { Accessibility = Accessibility.Public, DataType = "int",    PropertyName = "StateId"    },
+				new ClassMember { Accessibility = Accessibility.Public, DataType = "string", PropertyName = "PostalCode" },
+				new ClassMember { Accessibility = Accessibility.Public, DataType = "List<string>", PropertyName = "People", IsCollection = true }
+			}
+		}
+	};
+}
+
+
+private static ConstructorInformation PublicWithoutParameters()
+{
+	return new ConstructorInformation 
+	{
+		Accessibility = Accessibility.Public, 
+		Parameters = new()
+	};
+}
+
+
+private static ConstructorInformation PublicWithParameters()
+{
+	return new ConstructorInformation 
+	{
+		Accessibility = Accessibility.Public, 
+		Parameters = new() 
+		{
+			new ConstructorParameters("string", "address1"),
+			new ConstructorParameters("int", "stateId")
+		}
+	};
+}
+
+
+private static ConstructorInformation PrivateWithoutParameters()
+{
+	return new ConstructorInformation 
+	{
+		Accessibility = Accessibility.Private, 
+		Parameters = new()
+	};
+}
+
+
+private static ConstructorInformation PrivateWithParameters()
+{
+	return new ConstructorInformation 
+	{
+		Accessibility = Accessibility.Private, 
+		Parameters = new() 
+		{
+			new ConstructorParameters("string", "address1"),
+			new ConstructorParameters("int", "stateId")
+		}
+	};
+}
+
+
+private static ConstructorInformation PrivateCannotFindConstructor()
+{
+	return new ConstructorInformation 
+	{
+		Accessibility = Accessibility.Private, 
+		Parameters = new() 
+		{
+			new ConstructorParameters("string", "someAddrress"),
+			new ConstructorParameters("int", "stateId")
+		}
+	};
+}
+
+
+#>
