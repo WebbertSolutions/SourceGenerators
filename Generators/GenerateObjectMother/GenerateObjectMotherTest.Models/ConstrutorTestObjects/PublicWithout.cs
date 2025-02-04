@@ -2,6 +2,8 @@
 
 public class PublicWithout
 {
+	public int StreetNumber;
+
 	public PublicWithout()
 	{
 	}

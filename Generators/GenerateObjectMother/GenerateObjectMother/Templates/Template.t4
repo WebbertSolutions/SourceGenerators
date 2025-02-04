@@ -1,10 +1,5 @@
 ﻿<#+
 
-//
-//	START OF TEMPLATE
-//
-
-
 internal static class GenerateBuilder
 {
 	public static string GetTemplate(GeneratorInformation generatorInformation, string attributeNamespace)
@@ -13,13 +8,17 @@ internal static class GenerateBuilder
 		var interfaceInformation = generatorInformation.InterfaceInformation!;
 		var builderName = classInformation.ClassName;
 
-		string fieldBackers = GetAllFieldBackers(interfaceInformation);
-		string withProperties = GetAllWithProperties(builderName, interfaceInformation);
-		string builderConstructor = GetConstructor(interfaceInformation);
-		string typical = GetTypical(builderName, interfaceInformation);
+        
+		string fieldBackers = FieldGenerator.Generate(interfaceInformation);
+		string withProperties = PropertyGenerator.Generate(builderName, interfaceInformation);
+		string builderConstructor = ConstructorGenerator.Generate(interfaceInformation);
+		string typical = TypicalGenerator.Generate(builderName, interfaceInformation);
+        
 
-		return $@"#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
+		return $@"
+#pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
 #pragma warning disable CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
+#pragma warning disable CS8669 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context. Auto-generated code requires an explicit '#nullable' directive in source.
 #nullable disable
 
 // ================================================================================
@@ -41,16 +40,15 @@ public partial class {classInformation.ClassName} : Builder<{interfaceInformatio
 {fieldBackers}
 
     public override {interfaceInformation.ClassName} Build()
-    {{
-        if (BuilderObject?.IsValueCreated != true)
-        {{{builderConstructor}
-		}}
+    {{        
+		var builderObject = Construct();
+        
+		PostBuild(builderObject);
 
-        PostBuild(BuilderObject.Value);
-
-        return BuilderObject.Value;
+        return builderObject;
     }}
 
+{builderConstructor}
 
     //
     //  Default Constructor
@@ -62,9 +60,19 @@ public partial class {classInformation.ClassName} : Builder<{interfaceInformatio
     }}
 
 
-    //
-    //  With Properties
-    //
+    public static {classInformation.ClassName} Default(string json)
+    {{
+		var obj = System.Text.Json.JsonSerializer.Deserialize<{interfaceInformation!.ClassName}>(json);
+        return Default(obj);
+    }}
+
+
+    public static {classInformation.ClassName} Default({interfaceInformation!.ClassName} obj)
+    {{
+        return new {classInformation.ClassName}();
+    }}
+
+
 {withProperties}
 }}
 
@@ -72,7 +80,10 @@ public partial class {classInformation.ClassName} : Builder<{interfaceInformatio
 #nullable restore
 #pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
 #pragma warning restore CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
+#pragma warning restore CS8669 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context. Auto-generated code requires an explicit '#nullable' directive in source.
 ";
 	}
 }
+
+
 #>

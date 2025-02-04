@@ -1,0 +1,19 @@
+﻿<#+
+#nullable enable
+
+public class GeneratorInformation
+{
+	public ClassInformation ClassInformation { get; }
+	public InterfaceInformation InterfaceInformation { get; }
+
+
+	public GeneratorInformation(
+		ClassInformation classInformation,
+		InterfaceInformation interfaceInformation)
+	{
+		ClassInformation = classInformation;
+		InterfaceInformation = interfaceInformation;
+	}
+}
+
+#>

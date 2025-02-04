@@ -1,0 +1,22 @@
+﻿<#+
+#nullable enable
+
+public class ConstructorParameters
+{
+	public string DataType { get; }
+	public string ParameterName { get; }
+	public int Order { get; }
+
+
+	public ConstructorParameters(
+		string dataType,
+		string parameterName,
+		int order)
+	{
+		DataType = dataType;
+		ParameterName = parameterName;
+		Order = order;
+	}
+}
+
+#>

@@ -1,0 +1,51 @@
+﻿<#+
+#nullable enable
+
+public class InterfaceInformation
+{
+	public string Namespace { get; }
+	public string ClassName { get; }
+	public bool GenerateSample { get; }
+	public List<ConstructorInformation> Constructors { get; }
+	public List<ClassMember> Properties { get; }
+	public List<ClassMember> Fields { get; }
+	public InterfaceInformation? Inherited { get; }
+
+
+	public InterfaceInformation(
+		string @namespace,
+		string className,
+		bool generateSample,
+		List<ConstructorInformation> constructors,
+		List<ClassMember> properties,
+		List<ClassMember> fields,
+		InterfaceInformation? inherited
+	)
+	{
+		Namespace = @namespace;
+		ClassName = className;
+		GenerateSample = generateSample;
+		Constructors = constructors;
+		Properties = properties;
+		Fields = fields;
+		Inherited = inherited;
+	}
+
+
+	public IEnumerable<IClassMemberInfo> GetMembers()
+	{
+		return GetMembers(this);
+	}
+
+	private static IEnumerable<IClassMemberInfo> GetMembers(InterfaceInformation? interfaceInformation)
+	{
+		if (interfaceInformation == null)
+			return Array.Empty<IClassMemberInfo>();
+
+		return interfaceInformation!.Properties.Cast<IClassMemberInfo>()
+			.Union(interfaceInformation!.Fields.Cast<IClassMemberInfo>())
+			.Union(GetMembers(interfaceInformation.Inherited));
+	}
+}
+
+#>

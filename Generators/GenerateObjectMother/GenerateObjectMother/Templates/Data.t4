@@ -3,100 +3,126 @@
 private static GeneratorInformation GetData()
 {
 	return new GeneratorInformation
-	{
-		ClassInformation = new ClassInformation
-		{
-			Namespace = "RandomTestDataApp.Generator",
-			ClassName = "PostalAddressBuilder"
-		},
-		InterfaceInformation = new InterfaceInformation
-		{
-			Namespace = "RandomTestDataApp",
-			ClassName = "PostalAddress",
+	(
+		GetClassInformation(),
+		GetInterfaceInformation()
+	);
+}
 
-			Constructors = new()
-			{
-				PublicWithoutParameters()
-				//PublicWithParameters()
-				//PrivateWithoutParameters()
-				//PrivateWithParameters()
-				//PrivateCannotFindConstructor()
-			},
 
-			Properties = new()
-			{
-				new ClassMember { Accessibility = Accessibility.Public, DataType = "string", PropertyName = "Address1"   },
-				new ClassMember { Accessibility = Accessibility.Public, DataType = "string", PropertyName = "Address2"   },
-				new ClassMember { Accessibility = Accessibility.Public, DataType = "string", PropertyName = "City"       },
-				new ClassMember { Accessibility = Accessibility.Public, DataType = "int",    PropertyName = "StateId"    },
-				new ClassMember { Accessibility = Accessibility.Public, DataType = "string", PropertyName = "PostalCode" },
-				new ClassMember { Accessibility = Accessibility.Public, DataType = "List<string>", PropertyName = "People", IsCollection = true }
-			}
+private static Constructors GetConstructors()
+{
+	return new Constructors(
+		new List<ConstructorInformation>
+		{
+			PublicWithoutParameters()
+			//PublicWithParameters()
+			//PrivateWithoutParameters()
+			//PrivateWithParameters()
+			//PrivateCannotFindConstructor()
 		}
+	);
+}
+
+
+private static ClassInformation GetClassInformation()
+{
+	return new ClassInformation
+	(
+		"RandomTestDataApp.Generator",
+		"PostalAddressBuilder"
+	);
+}
+
+
+private static InterfaceInformation GetInterfaceInformation()
+{
+	return new InterfaceInformation
+	(
+		"RandomTestDataApp",
+		"PostalAddress",
+		true,
+		GetConstructors(),
+		GetClassPropertyMembers(),
+		new(),
+		null
+	);
+}
+
+
+private static List<ClassMember> GetClassPropertyMembers()
+{
+	return new()
+	{
+		new ClassMember (Accessibility.Public, ClassMemberType.Property, "string",  "Address1",    false, true, false, false, false),
+		new ClassMember (Accessibility.Public, ClassMemberType.Property, "string?", "Address2",    false, true, false, false, true ),
+		new ClassMember (Accessibility.Public, ClassMemberType.Property, "string",  "City",        false, true, false, false, false),
+		new ClassMember (Accessibility.Public, ClassMemberType.Property, "int",     "StateId",     false, true, false, false, false),
+		new ClassMember (Accessibility.Public, ClassMemberType.Property, "string",  "PostalCode",  false, true, false, false, false),
+		new ClassMember (Accessibility.Public, ClassMemberType.Property, "List<string>", "People", false, true, false, true,  false)
 	};
 }
 
 
 private static ConstructorInformation PublicWithoutParameters()
 {
-	return new ConstructorInformation 
-	{
-		Accessibility = Accessibility.Public, 
-		Parameters = new()
-	};
+	return new ConstructorInformation
+	(
+		Accessibility.Public, 
+		new Dictionary<string, ConstructorParameters>()
+	);
 }
 
 
 private static ConstructorInformation PublicWithParameters()
 {
-	return new ConstructorInformation 
-	{
-		Accessibility = Accessibility.Public, 
-		Parameters = new() 
+	return new ConstructorInformation
+	(
+		Accessibility.Public, 
+		new Dictionary<string, ConstructorParameters>()
 		{
-			new ConstructorParameters("string", "address1"),
-			new ConstructorParameters("int", "stateId")
+			{"address1", new ConstructorParameters("string", "address1", 1)},
+			{"stateId",  new ConstructorParameters("int",    "stateId",      2)}
 		}
-	};
+	);
 }
 
 
 private static ConstructorInformation PrivateWithoutParameters()
 {
-	return new ConstructorInformation 
-	{
-		Accessibility = Accessibility.Private, 
-		Parameters = new()
-	};
+	return new ConstructorInformation
+	(
+		Accessibility.Private, 
+		new Dictionary<string, ConstructorParameters>()
+	);
 }
 
 
 private static ConstructorInformation PrivateWithParameters()
 {
-	return new ConstructorInformation 
-	{
-		Accessibility = Accessibility.Private, 
-		Parameters = new() 
+	return new ConstructorInformation
+	(
+		Accessibility.Private, 
+		new Dictionary<string, ConstructorParameters>()
 		{
-			new ConstructorParameters("string", "address1"),
-			new ConstructorParameters("int", "stateId")
+			{"address1", new ConstructorParameters("string", "address1", 1)},
+			{"stateId",  new ConstructorParameters("int",    "stateId",  2)}
 		}
-	};
+	);
 }
 
 
 private static ConstructorInformation PrivateCannotFindConstructor()
 {
-	return new ConstructorInformation 
-	{
-		Accessibility = Accessibility.Private, 
-		Parameters = new() 
+	return new ConstructorInformation
+	(
+		Accessibility.Private, 
+		new Dictionary<string, ConstructorParameters>()
 		{
-			new ConstructorParameters("string", "someAddrress"),
-			new ConstructorParameters("int", "stateId")
+			{"someAddrress", new ConstructorParameters("string", "someAddrress", 1)},
+			{"stateId",      new ConstructorParameters("int",    "stateId",      2)}
 		}
-	};
+	);
 }
-
 
 #>

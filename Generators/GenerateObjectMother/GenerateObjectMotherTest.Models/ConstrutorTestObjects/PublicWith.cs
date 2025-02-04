@@ -2,6 +2,8 @@
 
 public class PublicWith
 {
+	public int StreetNumber;
+
 	public PublicWith(string address1, string city, string postalCode)
 	{
 		Address1 = address1;

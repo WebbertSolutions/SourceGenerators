@@ -1,29 +1,27 @@
 ﻿namespace WS.Gen.ObjectMother;
 
-public class GeneratorInformationComparer : BaseComparer, IEqualityComparer<GeneratorInformation>
+public class GeneratorInformationComparer : IEqualityComparer<GeneratorInformation>
 {
 	public static GeneratorInformationComparer Instance { get; } = new();
-
-	private static readonly ClassInformationComparer _classInfoComparer = ClassInformationComparer.Instance;
-	private static readonly InterfaceInformationComparer _interfaceInfoComparer = InterfaceInformationComparer.Instance;
 
 
 	public bool Equals(GeneratorInformation x, GeneratorInformation y)
 	{
+#if DEBUG
+		//DebugHelpers.Write("xComparer.txt", $"                Name: {x.ClassInformation.ClassName}  {y.ClassInformation.ClassName}");
+		//DebugHelpers.Write("xComparer.txt", $"    ClassInformation: {x.ClassInformation == y.ClassInformation}");
+		//DebugHelpers.Write("xComparer.txt", $"InterfaceInformation: {x.InterfaceInformation == y.InterfaceInformation}");
+		//DebugHelpers.Write("xComparer.txt", $"");
+#endif
+
 		return
-			AreObjectsEqual(x?.ClassInformation, y?.ClassInformation, _classInfoComparer) &&
-			AreObjectsEqual(x?.InterfaceInformation, y?.InterfaceInformation, _interfaceInfoComparer);
+			x.ClassInformation == y.ClassInformation &&
+			x.InterfaceInformation == y.InterfaceInformation;
 	}
 
 
 	public int GetHashCode(GeneratorInformation obj)
 	{
-		var hashCodes = new List<int>
-		{
-			obj.ClassInformation.GetHashCode(),
-			obj.InterfaceInformation.GetHashCode()
-		};
-
-		return hashCodes.Aggregate(CombineHashCodes);
+		return HashCode.Generate(obj.ClassInformation, obj.InterfaceInformation);
 	}
 }

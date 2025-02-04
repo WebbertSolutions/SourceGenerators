@@ -1,6 +1,6 @@
 ﻿namespace WS.Gen.ObjectMother;
 
-public abstract class BaseGenerator<T> : IIncrementalGenerator where T: class
+public abstract class BaseGenerator<T> : IIncrementalGenerator where T : class
 {
 	private readonly IEqualityComparer<T>  _comparer;
 
@@ -16,7 +16,7 @@ public abstract class BaseGenerator<T> : IIncrementalGenerator where T: class
 
 	protected abstract void GenerateTemplate(SourceProductionContext context, T data);
 	protected abstract void GenerateAdditionalTemplates(IncrementalGeneratorPostInitializationContext context);
-	protected abstract T ProcessAttribute(AttributeData generatorInterface, INamedTypeSymbol classSymbol);	
+	protected abstract T ProcessAttribute(AttributeData generatorInterface, INamedTypeSymbol classSymbol);
 
 
 	public void Initialize(IncrementalGeneratorInitializationContext context)
@@ -74,9 +74,15 @@ public abstract class BaseGenerator<T> : IIncrementalGenerator where T: class
 	{
 		return classSymbol.Constructors
 			.Select(c => new ConstructorInformation
+			(
+				c.DeclaredAccessibility,
+				c.Parameters.ToDictionary( p => p.Name.ToLower(), p => new ConstructorParameters(p.Type.ToDisplayString(), p.Name, p.Ordinal))
+			))
+			.OrderByDescending(c => c.Accessibility switch
 			{
-				Accessibility = c.DeclaredAccessibility,
-				Parameters = c.Parameters.Select(p => new ConstructorParameters(p.Type.ToDisplayString(), p.Name)).ToList()
+				Accessibility.Public => Accessibility.Public,
+				Accessibility.Private => Accessibility.Private,
+				_ => Accessibility.Protected
 			})
 			.ToList();
 	}
@@ -84,21 +90,32 @@ public abstract class BaseGenerator<T> : IIncrementalGenerator where T: class
 
 	protected static List<ClassMember> GetPropertyInformation(INamedTypeSymbol classSymbol)
 	{
-		return classSymbol.GetMembers().OfType<IPropertySymbol>()
-			.Select(ps =>
-			{
-				var nts = ps.Type as INamedTypeSymbol;
+		// https://learn.microsoft.com/en-us/dotnet/api/microsoft.codeanalysis.nullableannotation?view=roslyn-dotnet-4.9.0
 
-				return new ClassMember
-				{
-					Accessibility = ps.DeclaredAccessibility,
-					DataType = ps.Type.ToDisplayString(),
-					PropertyName = ps.Name,
-					IsReadOnly = ps.IsReadOnly,
-					IsValueType = ps.Type.IsValueType,
-					IsGenericType = nts?.IsGenericType ?? false,
-					IsCollection = ps.Type.ContainingModule?.ToDisplayString().Contains("Collection") ?? false
-				};
+		return classSymbol.GetMembers().OfType<IPropertySymbol>()
+			.Select(mem =>
+			{
+				var nts = mem.Type as INamedTypeSymbol;
+
+				//// Variable
+				//var v_namespace = ps.Type.ContainingNamespace.ToDisplayString();
+				//var v_type = ps.Type.Name;
+				//var v_Name = ps.Name;
+
+				//// Generic Parameter -   <T, U> 
+				//var gen_Parameter = nts?.TypeArguments.Select (t => new KeyValuePair<string, string> (t.ContainingNamespace.ToDisplayString(), t.Name)).ToList();
+
+				return new ClassMember(
+					mem.DeclaredAccessibility,
+					ClassMemberType.Property,
+					mem.Type.ToDisplayString(),
+					mem.Name,
+					mem.IsReadOnly,
+					mem.Type.IsValueType,
+					nts?.IsGenericType ?? false,
+					mem.Type.ContainingModule?.ToDisplayString().Contains("Collection") ?? false,
+					mem.NullableAnnotation == NullableAnnotation.Annotated
+				);
 			})
 			.ToList();
 	}
@@ -107,20 +124,21 @@ public abstract class BaseGenerator<T> : IIncrementalGenerator where T: class
 	protected static List<ClassMember> GetFieldInformation(INamedTypeSymbol classSymbol)
 	{
 		return classSymbol.GetMembers().OfType<IFieldSymbol>()
-			.Select(fs =>
+			.Select(mem =>
 			{
-				var nts = fs.Type as INamedTypeSymbol;
+				var nts = mem.Type as INamedTypeSymbol;
 
-				return new ClassMember
-				{
-					Accessibility = fs.DeclaredAccessibility,
-					DataType = fs.Type.ToDisplayString(),
-					PropertyName = fs.Name,
-					IsReadOnly = fs.IsReadOnly,
-					IsValueType = fs.Type.IsValueType,
-					IsGenericType = nts?.IsGenericType ?? false,
-					IsCollection = fs.Type.ContainingModule?.ToDisplayString().Contains("Collection") ?? false
-				};
+				return new ClassMember(
+					mem.DeclaredAccessibility,
+					ClassMemberType.Field,
+					mem.Type.ToDisplayString(),
+					mem.Name,
+					mem.IsReadOnly,
+					mem.Type.IsValueType,
+					nts?.IsGenericType ?? false,
+					mem.Type.ContainingModule?.ToDisplayString().Contains("Collection") ?? false,
+					mem.NullableAnnotation == NullableAnnotation.Annotated
+				);
 			})
 			.ToList();
 	}
@@ -129,7 +147,7 @@ public abstract class BaseGenerator<T> : IIncrementalGenerator where T: class
 	protected static NullableContextOptions GetNullableContextOptions(INamedTypeSymbol classSymbol)
 	{
 		var assembly = classSymbol.ContainingModule.ContainingAssembly as ISourceAssemblySymbol;
-	
+
 		return assembly?.Compilation.Options.NullableContextOptions ?? NullableContextOptions.Disable;
 	}
 }

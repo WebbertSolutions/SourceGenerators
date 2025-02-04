@@ -6,6 +6,7 @@ public partial class PublicWithBuilder
 	public static PublicWithBuilder Typical()
 	{
 		return new PublicWithBuilder()
+			.WithStreetNumber(123)
 			.WithAddress1("123 Main")
 			.SetDefaultAddress2()
 			.WithCity("Raleigh")

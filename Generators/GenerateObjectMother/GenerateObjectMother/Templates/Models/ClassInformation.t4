@@ -1,0 +1,22 @@
+﻿<#+
+#nullable enable
+
+public class ClassInformation
+{
+	public string Namespace { get; }
+	public string ClassName { get; }
+	public NullableContextOptions NullableContextOptions { get; }
+
+
+	public ClassInformation(
+		string @namespace,
+		string className,
+		NullableContextOptions nullableContextOptions = NullableContextOptions.Disable)
+	{
+		Namespace = @namespace;
+		ClassName = className;
+		NullableContextOptions = nullableContextOptions;
+	}
+}
+
+#>

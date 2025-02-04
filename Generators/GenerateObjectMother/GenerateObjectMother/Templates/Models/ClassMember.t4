@@ -1,0 +1,51 @@
+﻿<#+
+#nullable enable
+
+public class ClassMember : IClassMemberInfo
+{
+	private string? _fieldName;
+
+	public Accessibility Accessibility { get; }
+	public ClassMemberType ClassMemberType { get; }
+	public string DataType { get; }
+	public string Name { get; }
+	public string FieldName => _fieldName ??= GetFieldName();
+	public bool IsReadOnly { get; }
+	public bool IsValueType { get; }
+	public bool IsGenericType { get; }
+	public bool IsCollection { get; }
+	public bool IsNullable { get; }
+
+
+	public ClassMember
+	(
+		Accessibility accessibility,
+		ClassMemberType classMemberType,
+		string dataType,
+		string name,
+		bool isReadOnly,
+		bool isValueType,
+		bool isGenericType,
+		bool isCollection,
+		bool isNullable
+	)
+	{
+		Accessibility = accessibility;
+		ClassMemberType = classMemberType;
+		DataType = dataType;
+		Name = name;
+		IsReadOnly = isReadOnly;
+		IsValueType = isValueType;
+		IsGenericType = isGenericType;
+		IsCollection = isCollection;
+		IsNullable = isNullable;
+	}
+	
+
+	private string GetFieldName()
+		=> $"_{ToLowerChar()}{Name.Substring(1)}";
+
+	private string ToLowerChar()
+		=> Name.ToLower().Substring(0, 1);
+}
+#>

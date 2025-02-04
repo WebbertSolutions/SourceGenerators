@@ -1,15 +1,66 @@
 ﻿namespace WS.Gen.ObjectMother.Models;
 
-public class InterfaceInformation
+public record InterfaceInformation
+(
+	string Namespace,
+	string ClassName,
+	bool GenerateSample,
+	List<ConstructorInformation> Constructors,
+	List<ClassMember> Properties,
+	List<ClassMember> Fields,
+	InterfaceInformation? Inherited
+)
 {
-	public string Namespace { get; set; } = string.Empty;
-	public string ClassName { get; set; } = string.Empty;
+	public IEnumerable<IClassMemberInfo> GetMembers()
+	{
+		return GetMembers(this);
+	}
 
-	public bool GenerateSample { get; set; }
+	private static IEnumerable<IClassMemberInfo> GetMembers(InterfaceInformation? interfaceInformation)
+	{
+		if (interfaceInformation == null)
+			return Array.Empty<IClassMemberInfo>();
 
-	public List<ConstructorInformation> Constructors { get; set; } = new();
-	public List<ClassMember> Properties { get; set; } = new();
-	public List<ClassMember> Fields { get; set; } = new();
+		return interfaceInformation!.Properties.Cast<IClassMemberInfo>()
+			.Union(interfaceInformation!.Fields.Cast<IClassMemberInfo>())
+			.Union(GetMembers(interfaceInformation.Inherited));
+	}
 
-	public InterfaceInformation? Inherited;
+
+	public virtual bool Equals(InterfaceInformation? y)
+		=> y != null && Equals(this, y);
+
+
+	private static bool Equals(InterfaceInformation x, InterfaceInformation y)
+	{
+#if DEBUG
+		//DebugHelpers.Write("InterfaceInformation.txt", $"Constructor: {x.Constructors.Matches(y.Constructors)}");
+		//DebugHelpers.Write("InterfaceInformation.txt", $" Properties: {x.Properties.Matches(y.Properties)}");
+		//DebugHelpers.Write("InterfaceInformation.txt", $"     Fields: {x.Fields.Matches(y.Fields)}");
+		//DebugHelpers.Write("InterfaceInformation.txt", $"");
+#endif
+
+		return
+			x.Namespace == y.Namespace &&
+			x.ClassName == y.ClassName &&
+			x.GenerateSample == y.GenerateSample &&
+			x.Constructors.Matches(y.Constructors) &&
+			x.Properties.Matches(y.Properties) &&
+			x.Fields.Matches(y.Fields) &&
+			x.Inherited == y.Inherited;
+	}
+
+
+	public override int GetHashCode()
+	{
+		return HashCode.Generate(
+			Namespace,
+			ClassName,
+			GenerateSample,
+			Constructors,
+			Properties,
+			Fields,
+			Inherited
+		);
+	}
 }

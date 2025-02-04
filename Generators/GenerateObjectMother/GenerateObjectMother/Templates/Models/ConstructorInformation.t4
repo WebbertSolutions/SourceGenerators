@@ -1,0 +1,20 @@
+﻿<#+
+#nullable enable
+
+public class ConstructorInformation
+{
+	public Accessibility Accessibility { get; }
+	public IDictionary<string, ConstructorParameters> ConstructorParameters { get; }
+	public bool IsParameterless => !ConstructorParameters.Values.Any();
+
+
+	public ConstructorInformation(
+		Accessibility accessibility,
+		IDictionary<string, ConstructorParameters> constructorParameters)
+	{
+		Accessibility = accessibility;
+		ConstructorParameters = constructorParameters;
+	}
+}
+
+#>

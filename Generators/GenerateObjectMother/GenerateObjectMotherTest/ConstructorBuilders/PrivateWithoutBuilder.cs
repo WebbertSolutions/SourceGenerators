@@ -3,32 +3,36 @@
 [ObjectMotherBuilder(typeof(PrivateWithout), true)]
 public partial class PrivateWithoutBuilder
 {
-	public static PrivateWithoutBuilder Typical()
+	public static PrivateWithoutBuilder Required()
 	{
 		return new PrivateWithoutBuilder()
-			.WithAddress1("123 Main")
+			.WithAddress1(() => "123 Main")
 			.SetDefaultAddress2()
-			.WithCity("Raleigh")
-			.WithState(StateBuilder.Typical().Build())
-			.WithPostalCode("12345")
+			.WithState(() => StateBuilder.Typical().Build())
+			.WithPostalCode(() => "12345")
 			;
 	}
 
 
-	protected override Lazy<PrivateWithout> Construct()
+	public static PrivateWithoutBuilder Typical()
 	{
-		return new Lazy<PrivateWithout>(() =>
-		{
-			var obj = CreateInstance();
+		return Required()
+			.WithCity(() => "Raleigh")
+			;
+	}
 
-			obj.Address1 = _address1.Value;
-			obj.Address2 = _address2.Value;
-			obj.City = _city.Value;
-			obj.State = _state.Value;
-			obj.PostalCode = _postalCode.Value;
 
-			return obj;
-		});
+	protected override PrivateWithout Construct()
+	{
+		var obj = CreateInstance();
+
+		obj.Address1 = _address1.Value;
+		obj.Address2 = _address2.Value;
+		obj.City = _city.Value;
+		obj.State = _state.Value;
+		obj.PostalCode = _postalCode.Value;
+
+		return obj;
 	}
 
 

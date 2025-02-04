@@ -17,23 +17,22 @@ public class ObjectMotherGenerator : BaseGenerator<GeneratorInformation>
 	protected override GeneratorInformation ProcessAttribute(AttributeData generatorInterface, INamedTypeSymbol classSymbol)
 	{
 		return new GeneratorInformation
-		{
-			ClassInformation = ProcessAttribute(classSymbol),
-			InterfaceInformation = ProcessAttributeClassParameter(generatorInterface)
-		};
+		(
+			ProcessAttribute(classSymbol),
+			ProcessAttributeClassParameter(generatorInterface)
+		);
 	}
 
 
 	protected ClassInformation ProcessAttribute(INamedTypeSymbol classSymbol)
 	{
 		return new ClassInformation
-		{
-			Namespace = GetNamespace(classSymbol),
-			ClassName = GetClassName(classSymbol),
-			NullableContextOptions = GetNullableContextOptions(classSymbol)
-		};
+		(
+			GetNamespace(classSymbol),
+			GetClassName(classSymbol),
+			GetNullableContextOptions(classSymbol)
+		);
 	}
-
 
 
 	protected InterfaceInformation ProcessAttributeClassParameter(AttributeData generatorInterface)
@@ -46,29 +45,26 @@ public class ObjectMotherGenerator : BaseGenerator<GeneratorInformation>
 
 
 	private static InterfaceInformation GetInterfaceInformation(bool generateSample, INamedTypeSymbol classSymbol)
-		=> new()
-		{
-			GenerateSample = generateSample,
+	{
+		var ns = GetNamespace(classSymbol);
+		var className = GetClassName(classSymbol);
+		var constructors = GetConstructorInformation(classSymbol);
+		var properties = GetPropertyInformation(classSymbol);
+		var fields = GetFieldInformation(classSymbol);
+		var inherited = GetInheritedInformation(generateSample, classSymbol.BaseType);
 
-			Namespace = GetNamespace(classSymbol),
-			ClassName = GetClassName(classSymbol),
-			Constructors = GetConstructorInformation(classSymbol),
-			Properties = GetPropertyInformation(classSymbol),
-			Fields = GetFieldInformation(classSymbol),
-
-			Inherited = GetInheritedInformation(generateSample, classSymbol.BaseType)
-		};
+		return new InterfaceInformation(ns, className, generateSample, constructors, properties, fields, inherited);
+	}
 
 
 	private static InterfaceInformation? GetInheritedInformation(bool generateSample, INamedTypeSymbol? classSymbol)
 	{
 		if (classSymbol == null || classSymbol.SpecialType != SpecialType.None)
 			return null;
-
 		
 		return GetInterfaceInformation(generateSample, classSymbol);
-
 	}
+
 
 	protected override void GenerateTemplate(SourceProductionContext context, GeneratorInformation generatorInformation)
 	{

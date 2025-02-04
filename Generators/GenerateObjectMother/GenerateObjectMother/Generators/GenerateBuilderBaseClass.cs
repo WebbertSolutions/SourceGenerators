@@ -12,25 +12,10 @@ public abstract class Builder<T> where T : class
 {{
 	private static readonly System.Random _random = new();
 
-	protected Lazy<T> BuilderObject = null!;
-
 
 	public abstract T Build();
 
-	protected virtual Lazy<T> Construct() => null!;
-
-
-	public Builder<T> WithObject(T value)
-	{{
-		return WithObject(() => value);
-	}}
-
-
-	public Builder<T> WithObject(Func<T> func)
-	{{
-		BuilderObject = new Lazy<T>(func);
-		return this;
-	}}
+	protected abstract T Construct();
 
 
 	protected virtual void PostBuild(T value)

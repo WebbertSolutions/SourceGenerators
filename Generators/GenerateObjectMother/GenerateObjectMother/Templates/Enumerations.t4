@@ -16,4 +16,21 @@ public enum Accessibility
 	ProtectedOrFriend = ProtectedOrInternal,
 	Public = 6
 }
+
+[System.Flags]
+public enum NullableContextOptions
+{
+	Disable     = 0,
+	Warnings    = 1,
+	Annotations = 2,
+	Enable	    = 3
+}
+
+
+public enum ClassMemberType
+{
+	Field,
+	Property
+}
+
 #>

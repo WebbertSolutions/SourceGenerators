@@ -1,86 +1,11 @@
-﻿<#+
-#nullable enable
-
-
-//
-//	REQUIRED DATA STRUCTURES
-//
-
-public class GeneratorInformation
-{
-	public ClassInformation ClassInformation { get; set; } = new();
-	public InterfaceInformation InterfaceInformation { get; set; } = new();
-}
-
-
-public class ClassInformation
-{
-	public string Namespace { get; set; } = string.Empty;
-	public string ClassName { get; set; } = string.Empty;
-}
-
-
-public class InterfaceInformation
-{
-	public string Namespace { get; set; } = string.Empty;
-	public string ClassName { get; set; } = string.Empty;
-
-	public bool GenerateSample { get; set; }
-
-	public List<ConstructorInformation> Constructors { get; set; } = new();
-	public List<ClassMember> Properties { get; set; } = new();
-	public List<ClassMember> Fields { get; set; } = new();
-
-	public InterfaceInformation? Inherited;
-}
-
-
-public class ConstructorInformation
-{
-	public Accessibility Accessibility { get; set; }
-	public List<ConstructorParameters> Parameters { get; set; } = new();
-
-	public bool IsParameterless => !Parameters.Any();
-}
-
-
-public class ConstructorParameters
-{
-	public string DataType { get; set; } = string.Empty;
-	public string ParameterName { get; set; } = string.Empty;
-
-
-	public ConstructorParameters(string dataType, string parameterName)
-	{
-		DataType = dataType;
-		ParameterName = parameterName;
-	}
-}
-
-
-public class ClassMember
-{
-	public Accessibility Accessibility { get; set; }
-
-	public string DataType { get; set; } = string.Empty;
-	public string PropertyName { get; set; } = string.Empty;
-	public string FieldName => GetFieldName();
-
-	public bool IsReadOnly { get; set; }	
-	public bool IsValueType { get; set; }
-	public bool IsGenericType { get; set; }
-	public bool IsCollection { get; set; }
-
-
-	private string GetFieldName()
-	{
-		return $"_{ToLowerChar()}{PropertyName.Substring(1)}";
-	}
-
-	private string ToLowerChar()
-	{
-		return PropertyName.ToLower().Substring(0, 1);
-	}
-}
-
-#>
+﻿<#@ include file="models\ClassInformation.t4" #>
+<#@ include file="models\ClassMember.t4" #>
+<#@ include file="models\ConstructorInformation.t4" #>
+<#@ include file="models\ConstructorParameters.t4" #>
+<#@ include file="models\GeneratorInformation.t4" #>
+<#@ include file="models\IClassMemberInfo.t4" #>
+<#@ include file="models\InterfaceInformation.t4" #>
+<#@ include file="CodeGenerator\ConstructorGenerator.t4" #>
+<#@ include file="CodeGenerator\FieldGenerator.t4" #>
+<#@ include file="CodeGenerator\PropertyGenerator.t4" #>
+<#@ include file="CodeGenerator\TypicalGenerator.t4" #>

@@ -1,4 +1,4 @@
-﻿<#+
+﻿namespace WS.Gen.ObjectMother;
 
 public static class Utility
 {
@@ -28,5 +28,3 @@ public static class Utility
 		};
 	}
 }
-
-#>
