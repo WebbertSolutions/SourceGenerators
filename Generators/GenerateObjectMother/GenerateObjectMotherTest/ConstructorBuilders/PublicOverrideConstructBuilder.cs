@@ -7,7 +7,7 @@ public partial class PublicOverrideConstructBuilder
 	{
 		return new PublicOverrideConstructBuilder()
 			.WithAddress1("123 Main")
-			.SetDefaultAddress2()
+			.WithAddress2() 
 			.WithCity("Raleigh")
 			.WithState(StateBuilder.Typical().Build())
 			.WithPostalCode("12345")
@@ -21,16 +21,13 @@ public partial class PublicOverrideConstructBuilder
 
 	protected override PublicOverrideConstruct Construct()
 	{
-		var obj = CreateInstance(_address1.Value);
+		var obj = CreateInstance(_address1());
 
-		obj.Address2 = _address2.Value;
-		obj.City = _city.Value;
-		obj.State = _state.Value;
-		obj.PostalCode = _postalCode.Value;
+		obj.Address2 = _address2();
+		obj.City = _city();
+		obj.State = _state();
+		obj.PostalCode = _postalCode();
 
 		return obj;
 	}
-
-
-
 }

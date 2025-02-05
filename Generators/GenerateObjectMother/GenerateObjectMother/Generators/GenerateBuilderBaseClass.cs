@@ -15,6 +15,21 @@ public abstract class Builder<T> where T : class
 
 	public abstract T Build();
 
+
+	public IEnumerable<T> Build(int number)
+	{{
+		for (var min = 0; min < number; min++)
+			yield return Build();
+	}}
+
+
+	public IEnumerable<T> Build(int min, int max)
+	{{
+		for (; min < max; min++)
+			yield return Build();
+	}}
+
+
 	protected abstract T Construct();
 
 
@@ -34,6 +49,7 @@ public abstract class Builder<T> where T : class
 
 
 	private static System.Reflection.ConstructorInfo _ctor;
+
 
 	protected static T CreateInstance(params object[] parameters)
 	{{

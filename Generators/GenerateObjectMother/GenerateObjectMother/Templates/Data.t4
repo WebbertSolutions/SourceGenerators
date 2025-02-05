@@ -10,18 +10,16 @@ private static GeneratorInformation GetData()
 }
 
 
-private static Constructors GetConstructors()
+private static List<ConstructorInformation> GetConstructors()
 {
-	return new Constructors(
-		new List<ConstructorInformation>
-		{
-			PublicWithoutParameters()
-			//PublicWithParameters()
-			//PrivateWithoutParameters()
-			//PrivateWithParameters()
-			//PrivateCannotFindConstructor()
-		}
-	);
+	return new List<ConstructorInformation>
+	{
+		PublicWithoutParameters()
+		//PublicWithParameters()
+		//PrivateWithoutParameters()
+		//PrivateWithParameters()
+		//PrivateCannotFindConstructor()
+	};
 }
 
 

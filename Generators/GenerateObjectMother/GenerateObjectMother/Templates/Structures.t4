@@ -5,6 +5,7 @@
 <#@ include file="models\GeneratorInformation.t4" #>
 <#@ include file="models\IClassMemberInfo.t4" #>
 <#@ include file="models\InterfaceInformation.t4" #>
+<#@ include file="CodeGenerator\BuilderConstructorGenerator.t4" #>
 <#@ include file="CodeGenerator\ConstructorGenerator.t4" #>
 <#@ include file="CodeGenerator\FieldGenerator.t4" #>
 <#@ include file="CodeGenerator\PropertyGenerator.t4" #>

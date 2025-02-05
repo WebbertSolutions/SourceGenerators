@@ -29,6 +29,6 @@ public class FieldGenerator
 
 	private static string GetFieldBackers(IClassMemberInfo property)
 	{
-		return $"\tprivate Lazy<{property.DataType}> {property.FieldName} = new(default({property.DataType}));";
+		return $"\tprivate Func<{property.DataType}> {property.FieldName} = () => default({property.DataType});";
 	}
 }

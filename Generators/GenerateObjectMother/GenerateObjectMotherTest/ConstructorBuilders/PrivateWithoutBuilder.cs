@@ -7,7 +7,7 @@ public partial class PrivateWithoutBuilder
 	{
 		return new PrivateWithoutBuilder()
 			.WithAddress1(() => "123 Main")
-			.SetDefaultAddress2()
+			.WithAddress2() 
 			.WithState(() => StateBuilder.Typical().Build())
 			.WithPostalCode(() => "12345")
 			;
@@ -26,11 +26,11 @@ public partial class PrivateWithoutBuilder
 	{
 		var obj = CreateInstance();
 
-		obj.Address1 = _address1.Value;
-		obj.Address2 = _address2.Value;
-		obj.City = _city.Value;
-		obj.State = _state.Value;
-		obj.PostalCode = _postalCode.Value;
+		obj.Address1 = _address1();
+		obj.Address2 = _address2();
+		obj.City = _city();
+		obj.State = _state();
+		obj.PostalCode = _postalCode();
 
 		return obj;
 	}

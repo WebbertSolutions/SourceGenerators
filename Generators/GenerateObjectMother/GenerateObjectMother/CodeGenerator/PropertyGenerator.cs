@@ -20,7 +20,6 @@ public class PropertyGenerator
 			if (item.IsReadOnly || item.Accessibility != Accessibility.Public)
 				continue;
 
-			sb.Append(GetRemoveProperties(builderName, item));
 			sb.Append(GetWithProperties(builderName, item));
 		}
 
@@ -31,28 +30,20 @@ public class PropertyGenerator
 	}
 
 
-	private static string GetRemoveProperties(string builderName, IClassMemberInfo member)
-	{
-		return $@"
-	//
-	//	{member.Name}
-	//
-
-    public {builderName} SetDefault{member.Name}({member.DataType} value = default)
-		=> With{member.Name}(() => value);
-";
-	}
-
-
 	private static string GetWithProperties(string builderName, IClassMemberInfo member)
 	{
 		return $@"
-    public {builderName} With{member.Name}({member.DataType} value)
+
+	//
+	//	{member.Name}
+	//
+	    
+    public {builderName} With{member.Name}({member.DataType} value = default)
 		=> With{member.Name}(() => value);
     
     public {builderName} With{member.Name}(Func<{member.DataType}> func)
     {{
-        {member.FieldName} = new Lazy<{member.DataType}>(func);
+        {member.FieldName} = func;
         return this;
     }}
 ";

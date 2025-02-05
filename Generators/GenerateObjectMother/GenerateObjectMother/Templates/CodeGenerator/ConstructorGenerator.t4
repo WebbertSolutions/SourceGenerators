@@ -55,10 +55,10 @@ public class ConstructorGenerator
 
 	protected override {className} Construct()
 	{{
-		var obj = CreateInstance(_parm1.Value, _parm2.Value, _parm3.Value);
+		var obj = CreateInstance(_parm1(), _parm2(), _parm3());
 
-		obj.Parm4 = _parm4.Value;
-		obj.Parm5 = _parm5.Value;
+		obj.Parm4 = _parm4();
+		obj.Parm5 = _parm5();
 
 		return obj;
 	}}
@@ -104,7 +104,7 @@ public class ConstructorGenerator
 	{
 		var parameters = Parameters.OrderBy(p => p.ConstructorParameter.Order);
 
-		var text =  string.Join(", ", parameters.Select(p => $"{p.ClassMemberInfo.FieldName}.Value"));
+		var text =  string.Join(", ", parameters.Select(p => $"{p.ClassMemberInfo.FieldName}()"));
 
 		return string.IsNullOrWhiteSpace(text)
 			? string.Empty
@@ -156,8 +156,8 @@ public class ConstructorGenerator
 	private static string GetMemberAssignment(bool includeObjectName, int tabCount, IClassMemberInfo member)
 	{
 		return includeObjectName
-			? $"{Utility.Tabs(tabCount - 1)}obj.{member.Name} = {member.FieldName}.Value;"
-			: $"{Utility.Tabs(tabCount)}{member.Name} = {member.FieldName}.Value,";
+			? $"{Utility.Tabs(tabCount - 1)}obj.{member.Name} = {member.FieldName}();"
+			: $"{Utility.Tabs(tabCount)}{member.Name} = {member.FieldName}(),";
 	}
 
 

@@ -7,7 +7,7 @@ public partial class PublicWithoutBuilder
 	{
 		return new PublicWithoutBuilder()
 			.WithAddress1("123 Main")
-			.SetDefaultAddress2()
+			.WithAddress2() 
 			.WithCity("Raleigh")
 			.WithState(StateBuilder.Typical().Build())
 			.WithPostalCode("12345")

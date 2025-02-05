@@ -8,7 +8,7 @@ public partial class PublicWithBuilder
 		return new PublicWithBuilder()
 			.WithStreetNumber(123)
 			.WithAddress1("123 Main")
-			.SetDefaultAddress2()
+			.WithAddress2() 
 			.WithCity("Raleigh")
 			.WithState(StateBuilder.Typical().Build())
 			.WithPostalCode("12345")
