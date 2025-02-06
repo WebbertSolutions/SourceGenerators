@@ -30,7 +30,7 @@ public abstract class Builder<T> where T : class
 	}}
 
 
-	protected abstract T Construct();
+	protected virtual T Construct() => default!;
 
 
 	protected virtual void PostBuild(T value)
