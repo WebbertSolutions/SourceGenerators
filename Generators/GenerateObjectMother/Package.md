@@ -27,19 +27,24 @@ public partial class AddressBuilder
 - Copy the code at the bottom and paste into your class
 
 ````
-public static AddressBuilder Typical()
+public static AddressBuilder Required()
 {
     return new AddressBuilder()
-        .WithAddress1(default(string))
-        .WithAddress2(default(string))
-        .WithCity(default(string))
-        .WithState(default(GenerateObjectMotherTest.Models.State))
-        .WithPostalCode(default(string))
+        .WithAddress1(() => xx)
+        .WithAddress2(() => xx)
+        .WithCity(() => xx)
+        .WithPostalCode(() => xx)
+        .WithState(() => xx)
         ;
+}
+
+public static AddressBuilder Typical()
+{
+    return Required();
 }
 ````
 
-- Change the parameter value **default(string)** to suite your needs
+- Change the parameter value **xx** to suite your needs
 - Add additional methods as needed
 
 ````
@@ -49,7 +54,7 @@ public static AddressBuilder BeverlyHills()
         .WithAddress1("123 Main Street")
         .WithAddress2("Suite 200")
         .WithCity("Beverly Hills")
-        .WithState(StateBuilder.Typical().WithName("CA").Build())
+        .WithState(() => StateBuilder.Typical().WithName("CA").Build())
         .WithPostalCode("90210")
         ;
 }
