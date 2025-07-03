@@ -54,12 +54,13 @@ public record ConstructorGenerator(
 	{
 		var p = GetObjectInitializationMembers(3);
 		var f = GetMemberAssignment(3, Fields);
+		var semiColon = string.IsNullOrWhiteSpace(p) && string.IsNullOrWhiteSpace(f) ? ";" : string.Empty;
 
-		return $@"	// Public
+        return $@"	// Public
 
 	protected override {ClassName} Construct()
 	{{		
-		var obj = new {ClassName}{GetInstantionParameters()}{p}{f}
+		var obj = new {ClassName}{GetInstantionParameters()}{p}{f}{semiColon}
 		return obj;
 	}}
 ";
